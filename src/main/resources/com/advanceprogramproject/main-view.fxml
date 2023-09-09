@@ -5,8 +5,19 @@
 
 <AnchorPane style="-fx-pref-width: 930; -fx-pref-height: 480;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advanceprogramproject.Launcher">
    <children>
-      <Pane id="import-pane" layoutX="43.0" layoutY="33.0" prefHeight="320.0" prefWidth="840.0" style="-fx-background-color: D9D9D9; -fx-border-radius: 25px;" />
-       <Button id="start-button" layoutX="365.0" layoutY="387.0" prefHeight="50" prefWidth="200" style="-fx-background-color: rgba(0, 133, 255, 1); -fx-font-size: 24; -fx-text-fill: FFFFFF;" text="Start" />
+      <Pane id="importPane" layoutX="43.0" layoutY="33.0" prefHeight="320.0" prefWidth="840.0" style="
+      -fx-background-color: D9D9D9;
+      -fx-background-radius: 25;
+      -fx-border-radius: 25px;"
+      />
+       <Button id="startButton" layoutX="365.0" layoutY="387.0" prefHeight="50" prefWidth="200" style="
+       -fx-background-color: rgba(0, 133, 255, 1);
+       -fx-font-size: 24;
+       -fx-background-radius: 15;
+       -fx-text-fill: FFFFFF;
+       -fx-border-radius: 25;"
+               text="Start"
+       />
    </children>
 
 </AnchorPane>
