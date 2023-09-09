@@ -11,7 +11,12 @@ public class Launcher extends Application {
     @Override
     public void start(Stage primarystage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("main-view.fxml"));
+
         Scene scene = new Scene(fxmlLoader.load(), 930, 480);
+
+
+
+        primarystage.setResizable(false);
         primarystage.setTitle("Watermark");
         primarystage.setScene(scene);
         primarystage.show();

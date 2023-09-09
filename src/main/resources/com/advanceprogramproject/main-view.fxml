@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.advanceprogramproject.Launcher">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<AnchorPane style="-fx-pref-width: 930; -fx-pref-height: 480;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advanceprogramproject.Launcher">
+   <children>
+      <Pane id="import-pane" layoutX="43.0" layoutY="33.0" prefHeight="320.0" prefWidth="840.0" style="-fx-background-color: D9D9D9; -fx-border-radius: 25px;" />
+       <Button id="start-button" layoutX="365.0" layoutY="387.0" prefHeight="50" prefWidth="200" style="-fx-background-color: rgba(0, 133, 255, 1); -fx-font-size: 24; -fx-text-fill: FFFFFF;" text="Start" />
+   </children>
 
-
-</VBox>
+</AnchorPane>
