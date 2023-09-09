@@ -11,20 +11,18 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class Launcher extends Application {
-    @FXML
-    private Pane importPane;
     @Override
     public void start(Stage primarystage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("main-view.fxml"));
 
-        Scene scene = new Scene(fxmlLoader.load(), 930, 480);
+        Scene scene1 = new Scene(fxmlLoader.load(), 930, 480);
 
         // Setting border radius
 
 
         primarystage.setResizable(false);
         primarystage.setTitle("Watermark");
-        primarystage.setScene(scene);
+        primarystage.setScene(scene1);
         primarystage.show();
     }
 
