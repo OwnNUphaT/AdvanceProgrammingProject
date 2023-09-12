@@ -9,8 +9,8 @@
 
 <AnchorPane style="-fx-pref-width: 930; -fx-pref-height: 480; -fx-background-color: fffffff;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advanceprogramproject.control.MainViewController">
    <children>
-      <Pane fx:id="importPane" layoutX="174.0" layoutY="129.0" prefHeight="220.0" prefWidth="580.0" style="       -fx-background-color: D9D9D9;       -fx-background-radius: 25;       -fx-border-radius: 25px;">
-         <children>
+      <Pane fx:id="importPane" layoutX="174.0" layoutY="129.0" prefHeight="220.0" prefWidth="580.0" style="-fx-background-color: #D9D9D9; -fx-background-radius: 25; -fx-border-radius: 25px;">
+      <children>
             <ImageView fx:id="importImage" fitHeight="110.0" fitWidth="110.0" layoutX="235.0" layoutY="27.0" opacity="0.64" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@images/223438.png" />
