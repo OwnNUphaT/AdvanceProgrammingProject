@@ -52,6 +52,7 @@ public class MainViewController {
                     System.out.println("Dropped file: " + file.getAbsolutePath());
                     imagesFile.add(file.getAbsolutePath());
                 }
+                //TODO: Switch the Scene to imported-page.fxml
                 success = true;
                 // After the user has input the file into the list view, the import icons will be disappeared
                 importImage.setVisible(false);
