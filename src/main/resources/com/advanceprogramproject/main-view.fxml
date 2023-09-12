@@ -11,12 +11,12 @@
    <children>
       <Pane fx:id="importPane" layoutX="174.0" layoutY="129.0" prefHeight="220.0" prefWidth="580.0" style="       -fx-background-color: D9D9D9;       -fx-background-radius: 25;       -fx-border-radius: 25px;">
          <children>
-            <ImageView fitHeight="110.0" fitWidth="110.0" layoutX="235.0" layoutY="27.0" opacity="0.64" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="importImage" fitHeight="110.0" fitWidth="110.0" layoutX="235.0" layoutY="27.0" opacity="0.64" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@images/223438.png" />
                </image>
             </ImageView>
-            <Label layoutX="222.0" layoutY="154.0" text="Drags jpg or png file here" />
+            <Label fx:id="importLabel" layoutX="222.0" layoutY="154.0" text="Drags jpg or png file here" />
          </children></Pane>
       <Button fx:id="multipleFileBtn" layoutX="766.0" layoutY="428.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: rgb(229, 27, 35); -fx-font-size: 12; -fx-text-fill: ffffff; -fx-background-radius: 15;" text="Multiple images" />
       <ImageView fx:id="logoImage" fitHeight="120.0" fitWidth="120.0" layoutX="406" layoutY="9" pickOnBounds="true" preserveRatio="true">
