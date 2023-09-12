@@ -5,10 +5,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Launcher extends Application {
@@ -20,6 +22,7 @@ public class Launcher extends Application {
 
         //Attach the icon to the stage/window
         primarystage.getIcons().add(new Image(Launcher.class.getResourceAsStream("images/logo_size.jpg")));
+
 
         primarystage.setResizable(false);
         primarystage.setTitle("OPCODE Watermark");
