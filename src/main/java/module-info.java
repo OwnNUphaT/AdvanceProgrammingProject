@@ -4,5 +4,7 @@ module com.example.advanceprogramproject {
 
 
     opens com.advanceprogramproject to javafx.fxml;
+    opens com.advanceprogramproject.control;
     exports com.advanceprogramproject;
+    exports com.advanceprogramproject.control;
 }
