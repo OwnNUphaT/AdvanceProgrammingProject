@@ -1,6 +1,5 @@
 package com.advanceprogramproject.control;
 
-import com.advanceprogramproject.model.Pane;
 import javafx.fxml.FXML;
 
 public class MainViewController {

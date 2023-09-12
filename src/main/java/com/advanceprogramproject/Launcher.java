@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -17,11 +18,11 @@ public class Launcher extends Application {
 
         Scene scene1 = new Scene(fxmlLoader.load(), 930, 480);
 
-        // Setting border radius
-
+        //Attach the icon to the stage/window
+        primarystage.getIcons().add(new Image(Launcher.class.getResourceAsStream("images/logo_size.jpg")));
 
         primarystage.setResizable(false);
-        primarystage.setTitle("Watermark");
+        primarystage.setTitle("OPCODE Watermark");
         primarystage.setScene(scene1);
         primarystage.show();
     }
