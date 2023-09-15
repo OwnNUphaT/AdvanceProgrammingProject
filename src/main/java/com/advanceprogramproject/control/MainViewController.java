@@ -28,7 +28,7 @@ public class MainViewController {
     @FXML
     private Label importLabel;
 
-    public ArrayList<String> imagesFile;
+    public ArrayList<String> imagesFile = new ArrayList<>();
     private Stage stage;
     private Scene scene;
 
@@ -42,21 +42,28 @@ public class MainViewController {
         });
 
         // Setting OnDragDropped
+        // Setting OnDragDropped
         importPane.setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasFiles()) {
+                success = true;
                 // Handle the dropped files here
                 for (File file : db.getFiles()) {
                     // You can process the file here
                     System.out.println("Dropped file: " + file.getAbsolutePath());
                     imagesFile.add(file.getAbsolutePath());
                 }
-                //TODO: Switch the Scene to imported-page.fxml
-                success = true;
-                // After the user has input the file into the list view, the import icons will be disappeared
-                importImage.setVisible(false);
-                importLabel.setVisible(false);
+                // After processing the files, switch to the imported-page.fxml scene
+                try {
+                    Parent root = FXMLLoader.load(getClass().getResource("/com/advanceprogramproject/imported-page.fxml"));
+                    Scene scene = new Scene(root);
+                    Stage stage = (Stage) importPane.getScene().getWindow(); // Get the current stage
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException e) {
+                    System.out.println("The Switch is Unsuccessful " + e);
+                }
             }
             event.setDropCompleted(success);
             event.consume();

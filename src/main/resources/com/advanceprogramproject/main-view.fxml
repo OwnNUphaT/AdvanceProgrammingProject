@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane style="-fx-pref-width: 930; -fx-pref-height: 480; -fx-background-color: fffffff;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advanceprogramproject.control.MainViewController">
    <children>
@@ -18,11 +20,27 @@
             </ImageView>
             <Label fx:id="importLabel" layoutX="222.0" layoutY="154.0" text="Drags jpg or png file here" />
          </children></Pane>
-      <Button fx:id="multipleFileBtn" layoutX="766.0" layoutY="428.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: rgb(229, 27, 35); -fx-font-size: 12; -fx-text-fill: ffffff; -fx-background-radius: 15;" text="Multiple images" />
+      <Button fx:id="nextBtn" alignment="CENTER" layoutX="764.0" layoutY="412.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: rgb(229, 27, 35); -fx-font-size: 18; -fx-text-fill: ffffff; -fx-background-radius: 15;">
+         <font>
+            <Font size="18.0" />
+         </font>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets></Button>
       <ImageView fx:id="logoImage" fitHeight="120.0" fitWidth="120.0" layoutX="406" layoutY="9" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@images/logo_size.jpg" />
          </image></ImageView>
+      <ImageView fitHeight="23.0" fitWidth="31.0" layoutX="842.0" layoutY="421.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@icons/next.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="798.0" layoutY="418.0" text="Next" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 
 </AnchorPane>
