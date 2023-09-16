@@ -4,7 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="importPage" prefHeight="480.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advanceprogramproject.control.ImportPageController">
+<AnchorPane prefHeight="480.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advanceprogramproject.control.ImportPageController">
    <children>
       <Label layoutX="65.0" layoutY="116.0" style="-fx-font-size: 24;" text="Select Function:"/>
       <Button fx:id="imageBtn" layoutX="65.0" layoutY="174.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="800.0" style="-fx-font-size: 24; -fx-background-color: rgba(229, 27, 35, 1);" text="IMAGE" textFill="WHITE" />
