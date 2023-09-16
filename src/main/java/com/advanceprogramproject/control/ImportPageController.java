@@ -27,7 +27,11 @@ public class ImportPageController {
     public void Initialize() {
 
         imageBtn.setOnAction(event -> {
-            System.out.println("I have been click!");
+            stage.close();
+        });
+
+        textBtn.setOnAction(event -> {
+            System.out.println("lets put some watermark on");
         });
 
     }
