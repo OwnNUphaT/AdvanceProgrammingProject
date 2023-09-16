@@ -74,7 +74,7 @@ public class MainViewController {
 
         });
 
-        //TODO: Goes to the imported-page.fxml when nextBtn is push.
+        // Goes to the imported-page.fxml when nextBtn is push.
         nextBtn.setOnAction(event -> {
             try {
                 stage.close();
