@@ -3,11 +3,11 @@
 }
 .slider .track{
      -fx-background-color: #E51B23;
-     -fx-padding: 15;
+     -fx-padding: 5;
  }
 
 .slider .thumb{
-    -fx-background-color: white;
+    -fx-background-color: black;
 }
 
 .slider:horizontal {
