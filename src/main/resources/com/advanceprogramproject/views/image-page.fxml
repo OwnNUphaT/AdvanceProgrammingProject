@@ -1,14 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.advanceprogramproject.control.imagePageController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<SplitPane dividerPositions="0.40301724137931033" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="478.0" prefWidth="330.0">
+         <children>
+            <ImageView fx:id="imagePreview" fitHeight="220.0" fitWidth="220.0" layoutX="76.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" y="64.0" />
+            <Label layoutX="76.0" layoutY="36.0" text="Image Resize">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Button fx:id="downloadBtn" cache="true" layoutX="124.0" layoutY="361.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Download" textFill="WHITE" AnchorPane.bottomAnchor="87.0" AnchorPane.leftAnchor="124.0" AnchorPane.rightAnchor="122.0" AnchorPane.topAnchor="361.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="261.0" layoutY="334.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/download-circular-button.png" />
+               </image>
+            </ImageView>
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+         <children>
+            <Slider fx:id="dimensionSlider" layoutX="92.0" layoutY="70.0" prefHeight="15.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" value="50.0" />
+            <Label layoutX="105.0" layoutY="41.0" text="Image Dimension:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Slider layoutX="92.0" layoutY="164.0" prefHeight="15.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
+            <Label fx:id="dimensionLabel" layoutX="278.0" layoutY="110.0" text="Label" />
+            <Label fx:id="qualityLabel" layoutX="280.0" layoutY="206.0" text="Label" />
+            <Label layoutX="105.0" layoutY="137.0" text="Image Quality:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="widthField" layoutX="112.0" layoutY="268.0" prefHeight="30.0" prefWidth="120.0" promptText="Width:" style="-fx-background-color: D9D9D9;" />
+            <TextField fx:id="heightField" layoutX="320.0" layoutY="268.0" prefHeight="30.0" prefWidth="120.0" promptText="Height:" style="-fx-background-color: D9D9D9;" />
+            <Label layoutX="112.0" layoutY="239.0" text="Width:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="320.0" layoutY="240.0" text="Height: ">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="116.0" layoutY="329.0" text="Image Format:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <ChoiceBox layoutX="112.0" layoutY="356.0" prefWidth="150.0" />
+         </children></AnchorPane>
+  </items>
+</SplitPane>
