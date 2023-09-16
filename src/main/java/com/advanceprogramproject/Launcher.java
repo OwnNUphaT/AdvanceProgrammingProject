@@ -1,24 +1,24 @@
 package com.advanceprogramproject;
 
+import com.advanceprogramproject.control.MainViewController;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 
 public class Launcher extends Application {
     @Override
     public void start(Stage primarystage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("views/main-view.fxml"));
         Parent root = fxmlLoader.load();
+
+        MainViewController controller = fxmlLoader.getController();
+        controller.setStage(primarystage);
+
         Scene scene1 = new Scene(root, 930, 480);
 
         //Attach the icon to the stage/window
