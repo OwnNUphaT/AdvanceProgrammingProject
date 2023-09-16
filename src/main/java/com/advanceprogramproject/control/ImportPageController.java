@@ -1,10 +1,14 @@
 package com.advanceprogramproject.control;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-public class ImportPageController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ImportPageController implements Initializable {
     private Stage stage;
 
     @FXML
@@ -24,8 +28,8 @@ public class ImportPageController {
         }
     }
 
-    public void Initialize() {
-
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         imageBtn.setOnAction(event -> {
             stage.close();
         });
@@ -33,6 +37,5 @@ public class ImportPageController {
         textBtn.setOnAction(event -> {
             System.out.println("lets put some watermark on");
         });
-
     }
 }
