@@ -43,7 +43,7 @@ public class MainViewController {
         importListView.setOnDragOver(event -> {
             Dragboard db = event.getDragboard();
             final boolean isAccepted = db.getFiles().get(0).getName().toLowerCase().endsWith(".png") || db.getFiles().get(0).getName().toLowerCase().endsWith(".jpg");
-            if (db.hasString() && isAccepted) {
+            if (db.hasFiles() && isAccepted) {
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             } else {
                 event.consume();
@@ -77,7 +77,9 @@ public class MainViewController {
         //TODO: Goes to the imported-page.fxml when nextBtn is push.
         nextBtn.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("@views/imported-page.fxml"));
+                stage.close();
+
+                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
                 Parent root = loader.load();
                 // Pass the current stage reference to the new controller
                 ImportPageController importPageController = loader.getController();
@@ -85,8 +87,7 @@ public class MainViewController {
 
                 scene = new Scene(root);
                 stage.setScene(scene);
-
-                stage.hide();
+                stage.show();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
