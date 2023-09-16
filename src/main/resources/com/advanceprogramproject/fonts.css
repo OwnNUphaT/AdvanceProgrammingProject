@@ -1,10 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Climate+Crisis&family=Kanit:wght@200&family=Playfair+Display&family=Poppins:wght@400;500;600&family=Share+Tech+Mono&family=Unica+One&display=swap');
 
-.label {
-    -fx-font-family: 'Climate Crisis', cursive;
-    -fx-font-family: 'Kanit', sans-serif;
-    -fx-font-family: 'Playfair Display', serif;
-    -fx-font-family: 'Poppins', sans-serif;
-    -fx-font-family: 'Share Tech Mono', monospace;
-    -fx-font-family: 'Unica One', cursive;
+.label-styled {
+    -fx-font-family: 'Climate Crisis', 'Kanit', 'Playfair Display', 'Poppins', 'Share Tech Mono', 'Unica One', sans-serif;
 }
