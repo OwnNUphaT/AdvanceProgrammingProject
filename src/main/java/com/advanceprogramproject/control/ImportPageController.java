@@ -58,7 +58,25 @@ public class ImportPageController implements Initializable {
         });
 
         textBtn.setOnAction(event -> {
-            System.out.println("lets put some watermark on");
+            try{
+                //Closing the current scene
+                closePreviousScene();
+
+                //Loading new fxml file
+                FXMLLoader loader = new FXMLLoader(ImportPageController.class.getResource("/com/advanceprogramproject/views/text-page.fxml"));
+                Parent root = loader.load();
+
+                // Pass the current stage reference to the new controller
+                TextPageController controller = loader.getController();
+                controller.setStage(stage);
+
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 }
