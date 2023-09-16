@@ -31,12 +31,6 @@ public class TextPageController implements Initializable {
         this.stage = stage;
     }
 
-    // Method to close the previous scene
-    public void closePreviousScene() {
-        if (stage != null) {
-            stage.close();
-        }
-    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
