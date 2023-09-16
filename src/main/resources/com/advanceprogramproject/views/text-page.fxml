@@ -54,9 +54,9 @@
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <Slider fx:id="paddingSlider" layoutX="76.0" layoutY="300.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
-                <Label fx:id="dimensionLabel" layoutX="262.0" layoutY="257.0" text="Label" />
-                <Label fx:id="qualityLabel" layoutX="262.0" layoutY="325.0" text="Label" />
+                <Slider fx:id="paddSlider" layoutX="76.0" layoutY="300.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
+                <Label fx:id="visibilityLabel" layoutX="262.0" layoutY="257.0" text="Label" />
+                <Label fx:id="paddingLabel" layoutX="262.0" layoutY="325.0" text="Label" />
                 <Label layoutX="80.0" layoutY="274.0" text="Padding:">
                     <font>
                         <Font size="14.0" />
@@ -75,7 +75,7 @@
                 </Label>
                 <ChoiceBox fx:id="fontDrop" layoutX="76.0" layoutY="151.0" prefWidth="400.0" />
             <Slider fx:id="sizeSlider" layoutX="76.0" layoutY="384.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
-            <Label fx:id="dimensionLabel1" layoutX="262.0" layoutY="412.0" text="Label" />
+            <Label fx:id="sizeLabel" layoutX="262.0" layoutY="412.0" text="Label" />
             <Label layoutX="80.0" layoutY="354.0" text="Size:">
                <font>
                   <Font size="14.0" />
