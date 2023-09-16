@@ -3,6 +3,7 @@ package com.advanceprogramproject.control;
 import com.advanceprogramproject.Launcher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,10 +17,12 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
-public class MainViewController {
+public class MainViewController implements Initializable {
     private HashMap<String, String> fileMap = new HashMap<>();
     @FXML
     private ListView<String> importListView;
@@ -38,7 +41,8 @@ public class MainViewController {
         this.stage = stage;
     }
 
-    public void initialize() {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         // Setting OnDragOver
         importListView.setOnDragOver(event -> {
             Dragboard db = event.getDragboard();
@@ -92,6 +96,5 @@ public class MainViewController {
                 throw new RuntimeException(e);
             }
         });
-        //Let the user be able to choose a file within the browser to choose the file
     }
 }
