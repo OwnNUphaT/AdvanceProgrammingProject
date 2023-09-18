@@ -31,5 +31,7 @@ public class imagePageController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //TODO: Make all slider Label display the value of the slider under the slider
 
+        //TODO: Display the image file that'd been dropped. To the imagePreview
+
     }
 }
