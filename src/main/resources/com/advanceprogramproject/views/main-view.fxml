@@ -40,7 +40,7 @@
             <Image url="@../images/223438.png" />
          </image>
       </ImageView>
-      <Label fx:id="importLabel" layoutX="398.0" layoutY="284.0" stylesheets="@../fonts.css" text="Drags jpg or png file here" />
+      <Label fx:id="importLabel" layoutX="398.0" layoutY="284.0" text="Drags jpg or png file here" />
    </children>
 
 </AnchorPane>

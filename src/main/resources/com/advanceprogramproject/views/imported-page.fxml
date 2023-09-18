@@ -8,11 +8,11 @@
 
 <AnchorPane fx:id="importPage" prefHeight="480.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advanceprogramproject.control.ImportPageController">
    <children>
-      <Label layoutX="65.0" layoutY="116.0" style="-fx-font-size: 24; -fx-font-family: 'Noto Sans Linear B', sans-serif;" stylesheets="@../fonts.css" text="Select Function:">
+      <Label layoutX="65.0" layoutY="116.0" style="-fx-font-size: 24; -fx-font-family: 'Noto Sans Linear B', sans-serif;" text="Select Function:">
          <font>
             <Font name="System Bold" size="14.0" />
          </font></Label>
-      <Button fx:id="imageBtn" layoutX="65.0" layoutY="174.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="800.0" style="-fx-font-size: 24; -fx-background-color: rgba(229, 27, 35, 1);" stylesheets="@../fonts.css" text="IMAGE" textFill="WHITE">
+      <Button fx:id="imageBtn" layoutX="65.0" layoutY="174.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="800.0" style="-fx-font-size: 24; -fx-background-color: rgba(229, 27, 35, 1);" text="IMAGE" textFill="WHITE">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
