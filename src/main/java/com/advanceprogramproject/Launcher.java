@@ -26,7 +26,7 @@ public class Launcher extends Application {
 
 
         primarystage.setResizable(false);
-        primarystage.setTitle("OPCODE Watermark");
+        primarystage.setTitle("OPCODE Watermark");//kuy
         primarystage.setScene(scene1);
         primarystage.show();
     }
