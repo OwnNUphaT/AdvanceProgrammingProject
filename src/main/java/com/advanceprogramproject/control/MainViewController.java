@@ -1,6 +1,7 @@
 package com.advanceprogramproject.control;
 
 import com.advanceprogramproject.Launcher;
+import com.advanceprogramproject.model.FilePath;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -64,10 +65,16 @@ public class MainViewController implements Initializable {
                     String fileName = file.getName(); // Extract only the file name
                     importListView.getItems().add(fileName);
 
+                    FilePath filePath = new FilePath();
+                    filePath.setFile(file);
+                    filePath.setFile(file);
+                    System.out.println("File path set: " + file.getAbsolutePath());
+
                     // Add the file name to the inputListView and the absolute path to the list
                     fileMap.put(fileName, file.getAbsolutePath());
                     event.setDropCompleted(true);
                 }
+
                 //Make the importImage and label disappear
                 importImage.setVisible(false);
                 importLabel.setVisible(false);
