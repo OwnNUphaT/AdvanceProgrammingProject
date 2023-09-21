@@ -1,5 +1,7 @@
 package com.advanceprogramproject.control;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -13,17 +15,18 @@ import java.util.ResourceBundle;
 public class TextPageController implements Initializable {
     private Stage stage;
     @FXML
-    private Label visibilityLabel;
+    private Label VisibilityLabel;
     @FXML
-    private Label paddingLabel;
+    private Label PaddingLabel;
     @FXML
-    private Label sizeLabel;
+    private Label SizeLabel;
     @FXML
     private Slider VisibilitySlider;
     @FXML
-    private Slider paddSlider;
+    private Slider PaddSlider;
     @FXML
-    private Slider sizeSlider;
+    private Slider SizeSlider;
+    int percent;
 
 
 
@@ -34,7 +37,32 @@ public class TextPageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        //TODO: Make all slider Label display the value of the slider under the slider
+        //Visibility slider percentage.
+        VisibilitySlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                percent = (int) VisibilitySlider.getValue();
+                VisibilityLabel.setText(Integer.toString(percent) + "%");
+            }
+        });
+
+        //Padding slider percentage.
+        PaddSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                percent = (int) PaddSlider.getValue();
+                PaddingLabel.setText(Integer.toString(percent) + "%");
+            }
+        });
+
+        //Size slider percentage.
+        SizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                percent = (int) SizeSlider.getValue();
+                SizeLabel.setText(Integer.toString(percent) + "%");
+            }
+        });
 
     }
 }

@@ -33,6 +33,7 @@ public class imagePageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        //dimension slider percentage
         dimensionSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
@@ -41,6 +42,7 @@ public class imagePageController implements Initializable {
             }
         });
 
+        //quality slider percentage
         qualitySlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
@@ -48,9 +50,6 @@ public class imagePageController implements Initializable {
                 qualityLabel.setText(Integer.toString(percent) + "%");
             }
         });
-
-        //TODO: Make all slider Label display the value of the slider under the slider
-        // Make sure its work na kub
 
         //TODO: Display the image file that'd been dropped. To the imagePreview
 
