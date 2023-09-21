@@ -42,15 +42,15 @@
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
-            <Slider fx:id="dimensionSlider" layoutX="92.0" layoutY="70.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" value="50.0" />
+            <Slider fx:id="dimensionSlider" layoutX="92.0" layoutY="70.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
             <Label layoutX="105.0" layoutY="41.0" text="Image Dimension:">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
             <Slider fx:id="qualitySlider" layoutX="92.0" layoutY="164.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
-            <Label fx:id="dimensionLabel" layoutX="278.0" layoutY="110.0" text="Label" />
-            <Label fx:id="qualityLabel" layoutX="280.0" layoutY="206.0" text="Label" />
+            <Label fx:id="dimensionLabel" layoutX="278.0" layoutY="110.0" text="0%" />
+            <Label fx:id="qualityLabel" layoutX="280.0" layoutY="206.0" text="0%" />
             <Label layoutX="105.0" layoutY="137.0" text="Image Quality:">
                <font>
                   <Font size="14.0" />
