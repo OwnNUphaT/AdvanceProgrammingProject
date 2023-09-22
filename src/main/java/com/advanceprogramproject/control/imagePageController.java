@@ -3,12 +3,16 @@ package com.advanceprogramproject.control;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -22,6 +26,9 @@ public class imagePageController implements Initializable {
     private Slider dimensionSlider;
     @FXML
     private Slider qualitySlider;
+    @FXML
+    private Button BackBtnImage;
+    private Scene scene;
     int percent;
 
     public void setStage(Stage stage) {
@@ -53,5 +60,24 @@ public class imagePageController implements Initializable {
 
         //TODO: Display the image file that'd been dropped. To the imagePreview
 
+        //Back to main-view page.
+        BackBtnImage.setOnAction(event -> {
+            try {
+                stage.close();
+
+                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/main-view.fxml"));
+                Parent root = loader.load();
+                // Pass the current stage reference to the new controller
+                MainViewController mainViewController = loader.getController();
+                mainViewController.setStage(stage);
+
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
+
+        });
     }
 }

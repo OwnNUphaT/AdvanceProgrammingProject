@@ -81,6 +81,17 @@
                   <Font size="14.0" />
                </font>
             </Label>
+            <Button fx:id="BackBtnText" cache="true" layoutX="411.0" layoutY="429.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Back" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
             </children></AnchorPane>
     </items>
 </SplitPane>
