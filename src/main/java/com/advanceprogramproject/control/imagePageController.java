@@ -1,6 +1,6 @@
 package com.advanceprogramproject.control;
 
-import com.advanceprogramproject.model.FilePath;
+import com.advanceprogramproject.model.DataModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -14,11 +14,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.File;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,9 +36,12 @@ public class imagePageController implements Initializable {
     private Button BackBtnImage;
     private Scene scene;
 
+    @FXML
     private ImageView imagePreview;
+
+    private DataModel dataModel;
     int percent;
-    FilePath filePath = new FilePath();
+
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -70,6 +70,7 @@ public class imagePageController implements Initializable {
 
         //TODO: Display the image file that'd been dropped. To the imagePreview
 
+
         //Back to main-view page.
         BackBtnImage.setOnAction(event -> {
             try {
@@ -91,19 +92,18 @@ public class imagePageController implements Initializable {
         });
 
 
-        if (filePath.getFile() != null) {
-            try {
-                FileInputStream fileInputStream = new FileInputStream(filePath.getFile());
-                Image image = new Image(fileInputStream);
-                imagePreview.setImage(image);
-                fileInputStream.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        DataModel dataModel = DataModel.getInstance();
+
+        // Check if the file path is not null before using it
+        if (dataModel.getDropFilePath() != null) {
+            // Use dataModel.getDropFilePath() to access the file path
+            String filePath = dataModel.getDropFilePath();
+            imagePreview.setImage(new Image(filePath));
+
+            // Load the image or perform other operations with the file path
         } else {
-            System.out.println("Image Not Found");
+            System.out.println("File path is null or not set.");
         }
+
     }
 }

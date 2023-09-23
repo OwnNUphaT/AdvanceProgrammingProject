@@ -1,5 +1,6 @@
 package com.advanceprogramproject.control;
 
+import com.advanceprogramproject.model.DataModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,6 +22,7 @@ public class ImportPageController implements Initializable {
 
     @FXML
     private Button textBtn;
+    private DataModel dataModel;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -47,6 +49,7 @@ public class ImportPageController implements Initializable {
                 // Pass the current stage reference to the new controller
                 imagePageController controller = loader.getController();
                 controller.setStage(stage);
+
 
                 scene = new Scene(root);
                 stage.setScene(scene);
@@ -78,5 +81,9 @@ public class ImportPageController implements Initializable {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void setDataModel(DataModel dataModel) {
+        this.dataModel = dataModel;
     }
 }

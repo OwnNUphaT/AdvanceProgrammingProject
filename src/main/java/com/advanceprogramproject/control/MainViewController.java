@@ -1,7 +1,6 @@
 package com.advanceprogramproject.control;
 
-import com.advanceprogramproject.Launcher;
-import com.advanceprogramproject.model.FilePath;
+import com.advanceprogramproject.model.DataModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,7 +12,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -35,11 +33,15 @@ public class MainViewController implements Initializable {
     private Button nextBtn;
 
     public ArrayList<String> imagesFile = new ArrayList<>();
+    private DataModel dataModel = new DataModel();
     private Stage stage;
     private Scene scene;
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+    public void setDataModel(DataModel dataModel) {
+        this.dataModel = dataModel; // Set the shared DataModel
     }
 
     @Override
@@ -64,11 +66,12 @@ public class MainViewController implements Initializable {
                     File file = db.getFiles().get(i);
                     String fileName = file.getName(); // Extract only the file name
                     importListView.getItems().add(fileName);
-
-                    FilePath filePath = new FilePath();
-                    filePath.setFile(file);
-                    filePath.setFile(file);
                     System.out.println("File path set: " + file.getAbsolutePath());
+
+                    // Set the file path in the dataModel
+                    DataModel dataModel = DataModel.getInstance();
+                    dataModel.setDropFilePath(String.valueOf(file));
+
 
                     // Add the file name to the inputListView and the absolute path to the list
                     fileMap.put(fileName, file.getAbsolutePath());
@@ -92,9 +95,12 @@ public class MainViewController implements Initializable {
 
                 FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
                 Parent root = loader.load();
+
                 // Pass the current stage reference to the new controller
                 ImportPageController importPageController = loader.getController();
                 importPageController.setStage(stage);
+
+
 
                 scene = new Scene(root);
                 stage.setScene(scene);
@@ -103,6 +109,5 @@ public class MainViewController implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-        //hello
     }
 }
