@@ -4,11 +4,17 @@ import com.advanceprogramproject.model.FilePath;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
+import javafx.stage.Stage;
+
+import java.io.File;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
@@ -30,6 +36,9 @@ public class imagePageController implements Initializable {
     @FXML
     private Slider qualitySlider;
     @FXML
+    private Button BackBtnImage;
+    private Scene scene;
+
     private ImageView imagePreview;
     int percent;
     FilePath filePath = new FilePath();
@@ -37,8 +46,6 @@ public class imagePageController implements Initializable {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -62,6 +69,28 @@ public class imagePageController implements Initializable {
         });
 
         //TODO: Display the image file that'd been dropped. To the imagePreview
+
+        //Back to main-view page.
+        BackBtnImage.setOnAction(event -> {
+            try {
+                stage.close();
+
+                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
+                Parent root = loader.load();
+                // Pass the current stage reference to the new controller
+                ImportPageController importPageController = loader.getController();
+                importPageController.setStage(stage);
+
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
+
+        });
+
+
         if (filePath.getFile() != null) {
             try {
                 FileInputStream fileInputStream = new FileInputStream(filePath.getFile());

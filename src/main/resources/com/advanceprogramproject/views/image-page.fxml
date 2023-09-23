@@ -74,6 +74,17 @@
                </font>
             </Label>
             <ChoiceBox layoutX="112.0" layoutY="356.0" prefWidth="150.0" />
+            <Button fx:id="BackBtnImage" cache="true" layoutX="403.0" layoutY="421.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Back" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children></AnchorPane>
   </items>
 </SplitPane>
