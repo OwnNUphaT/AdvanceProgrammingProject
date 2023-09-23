@@ -16,9 +16,11 @@ import javafx.stage.Stage;
 
 import javafx.scene.image.ImageView;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -75,35 +77,53 @@ public class imagePageController implements Initializable {
         if (dataModel.getDropFilePath() != null) {
             // Use dataModel.getDropFilePath() to access the file path
             String filePath = dataModel.getDropFilePath();
-            imagePreview.setImage(new Image(filePath));
+            if (filePath != null) {
+                File file = new File(filePath);
+                if (file.exists()) {
+                    try {
+                        // Convert the file path to a URL with the file: protocol
+                        URL fileUrl = file.toURI().toURL();
 
-            // Load the image or perform other operations with the file path
-        } else {
-            System.out.println("File path is null or not set.");
-        }
+                        // Load the image using the URL
+                        Image image = new Image(fileUrl.toString());
 
-
-        //Back to main-view page.
-        BackBtnImage.setOnAction(event -> {
-            try {
-                stage.close();
-
-                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
-                Parent root = loader.load();
-                // Pass the current stage reference to the new controller
-                ImportPageController importPageController = loader.getController();
-                importPageController.setStage(stage);
-
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                throw new RuntimeException();
+                        // Set the loaded image to the ImageView
+                        imagePreview.setImage(image);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (RuntimeException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    System.out.println("File does not exist: " + filePath);
+                }
+                // Load the image or perform other operations with the file path
+            } else {
+                System.out.println("File path is null or not set.");
             }
 
-        });
 
+            //Back to main-view page.
+            BackBtnImage.setOnAction(event -> {
+                try {
+                    stage.close();
 
+                    FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
+                    Parent root = loader.load();
+                    // Pass the current stage reference to the new controller
+                    ImportPageController importPageController = loader.getController();
+                    importPageController.setStage(stage);
+
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException e) {
+                    throw new RuntimeException();
+                }
+
+            });
+
+        }
 
     }
 }
