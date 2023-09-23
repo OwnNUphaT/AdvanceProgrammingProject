@@ -76,11 +76,11 @@ public class TextPageController implements Initializable {
             try {
                 stage.close();
 
-                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/main-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
                 Parent root = loader.load();
                 // Pass the current stage reference to the new controller
-                MainViewController mainViewController = loader.getController();
-                mainViewController.setStage(stage);
+                ImportPageController importPageController = loader.getController();
+                importPageController.setStage(stage);
 
                 scene = new Scene(root);
                 stage.setScene(scene);

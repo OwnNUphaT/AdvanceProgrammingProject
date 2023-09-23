@@ -10,8 +10,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,8 +36,6 @@ public class imagePageController implements Initializable {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -65,11 +65,11 @@ public class imagePageController implements Initializable {
             try {
                 stage.close();
 
-                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/main-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
                 Parent root = loader.load();
                 // Pass the current stage reference to the new controller
-                MainViewController mainViewController = loader.getController();
-                mainViewController.setStage(stage);
+                ImportPageController importPageController = loader.getController();
+                importPageController.setStage(stage);
 
                 scene = new Scene(root);
                 stage.setScene(scene);
@@ -79,5 +79,6 @@ public class imagePageController implements Initializable {
             }
 
         });
+
     }
 }
