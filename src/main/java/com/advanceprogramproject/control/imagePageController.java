@@ -68,7 +68,19 @@ public class imagePageController implements Initializable {
             }
         });
 
-        //TODO: Display the image file that'd been dropped. To the imagePreview
+        //TODO: Please Test this function
+        DataModel dataModel = DataModel.getInstance();
+
+        // Check if the file path is not null before using it
+        if (dataModel.getDropFilePath() != null) {
+            // Use dataModel.getDropFilePath() to access the file path
+            String filePath = dataModel.getDropFilePath();
+            imagePreview.setImage(new Image(filePath));
+
+            // Load the image or perform other operations with the file path
+        } else {
+            System.out.println("File path is null or not set.");
+        }
 
 
         //Back to main-view page.
@@ -91,19 +103,7 @@ public class imagePageController implements Initializable {
 
         });
 
-        //TODO: Please Test this function
-        DataModel dataModel = DataModel.getInstance();
 
-        // Check if the file path is not null before using it
-        if (dataModel.getDropFilePath() != null) {
-            // Use dataModel.getDropFilePath() to access the file path
-            String filePath = dataModel.getDropFilePath();
-            imagePreview.setImage(new Image(filePath));
-
-            // Load the image or perform other operations with the file path
-        } else {
-            System.out.println("File path is null or not set.");
-        }
 
     }
 }
