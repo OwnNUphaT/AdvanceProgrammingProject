@@ -1,5 +1,6 @@
 package com.advanceprogramproject.control;
 
+import com.advanceprogramproject.model.FilePath;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -14,6 +15,12 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.File;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -31,7 +38,10 @@ public class imagePageController implements Initializable {
     @FXML
     private Button BackBtnImage;
     private Scene scene;
+
+    private ImageView imagePreview;
     int percent;
+    FilePath filePath = new FilePath();
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -80,5 +90,20 @@ public class imagePageController implements Initializable {
 
         });
 
+
+        if (filePath.getFile() != null) {
+            try {
+                FileInputStream fileInputStream = new FileInputStream(filePath.getFile());
+                Image image = new Image(fileInputStream);
+                imagePreview.setImage(image);
+                fileInputStream.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Image Not Found");
+        }
     }
 }
