@@ -31,16 +31,18 @@ public class ImageFormatConverter {
     }
 
     // Helper method to convert JavaFX Image to BufferedImage
-    private static BufferedImage convertFXImageToBufferedImage(Image image) {
+    public static BufferedImage convertFXImageToBufferedImage(Image image) {
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
 
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        byte[] buffer = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
 
-        // Get the pixels from the JavaFX Image
-        image.getPixelReader().getPixels(0, 0, width, height, PixelFormat.getByteBgraInstance(), buffer, 0, width * 4);
+        int[] buffer = new int[width * height];
+        image.getPixelReader().getPixels(0, 0, width, height, PixelFormat.getIntArgbInstance(), buffer, 0, width);
+
+        bufferedImage.setRGB(0, 0, width, height, buffer, 0, width);
 
         return bufferedImage;
     }
+
 }

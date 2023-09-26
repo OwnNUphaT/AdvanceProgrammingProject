@@ -1,6 +1,7 @@
 package com.advanceprogramproject.control;
 
 import com.advanceprogramproject.model.DataModel;
+import com.advanceprogramproject.model.ImageFormatConverter;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -10,10 +11,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javafx.scene.image.ImageView;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,6 +40,8 @@ public class imagePageController implements Initializable {
     private Button BackBtnImage;
     @FXML
     private TextField widthField;
+    @FXML
+    private Button downloadBtn;
     @FXML
     private TextField heightField;
     @FXML
@@ -160,8 +166,38 @@ public class imagePageController implements Initializable {
             });
 
             //Set Image Format
+            ImageFormatConverter formatConverter = new ImageFormatConverter();
             String[] fileFormat = {"JPG", "PNG"};
             imageFormat.getItems().addAll(fileFormat);
+            String selectedFormat = (String) imageFormat.getSelectionModel().getSelectedItem();
+            Image imageDone = new Image(dataModel.getDropFilePath());
+            imageFormat.setOnAction(event -> {
+                if ("PNG".equals(selectedFormat)) {
+                    formatConverter.convertAndSaveImage(imageDone, "PNG");
+                }else {
+                    formatConverter.convertAndSaveImage(imageDone, "JPG");
+                }
+            });
+
+            //Download Button
+            downloadBtn.setOnAction(event -> {
+                // Create a FileChooser to select the download location
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Save Edited Image");
+
+                // Set the default file name (you can change this as needed)
+                fileChooser.setInitialFileName("edited_image.png");
+
+                // Show the save dialog and get the selected file
+                File selectedFile = fileChooser.showSaveDialog(stage);
+                try {
+                    ImageIO.write(formatConverter.convertFXImageToBufferedImage(imageDone), selectedFormat, selectedFile );
+                }catch (IOException e) {
+                    e.getMessage();
+                }
+
+            });
+
 
         }
 

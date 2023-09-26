@@ -4,6 +4,16 @@ public class DataModel {
     private static DataModel instance;
     private String dropFilePath;
 
+    private String fileName;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public DataModel() {
         // Private constructor to prevent external instantiation
     }

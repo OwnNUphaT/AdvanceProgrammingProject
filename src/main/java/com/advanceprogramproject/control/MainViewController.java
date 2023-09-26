@@ -71,6 +71,7 @@ public class MainViewController implements Initializable {
                     // Set the file path in the dataModel
                     DataModel dataModel = DataModel.getInstance();
                     dataModel.setDropFilePath(String.valueOf(file));
+                    dataModel.setFileName(fileName);
 
 
                     // Add the file name to the inputListView and the absolute path to the list
