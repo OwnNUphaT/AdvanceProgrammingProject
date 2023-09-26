@@ -160,6 +160,8 @@ public class imagePageController implements Initializable {
             });
 
             //Set Image Format
+            String[] fileFormat = {"JPG", "PNG"};
+            imageFormat.getItems().addAll(fileFormat);
 
         }
 
