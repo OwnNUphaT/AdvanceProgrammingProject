@@ -53,11 +53,17 @@ public class imagePageController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         //dimension slider percentage
+        // Add a listener to the slider to update the label and change image dimensions
         dimensionSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                percent = (int) dimensionSlider.getValue();
+                int percent = (int) dimensionSlider.getValue();
                 dimensionLabel.setText(Integer.toString(percent) + "%");
+
+                // Adjust the image dimensions based on the slider value
+                double scaleFactor = percent / 100.0;
+                imagePreview.setFitWidth(scaleFactor * imagePreview.getImage().getWidth());
+                imagePreview.setFitHeight(scaleFactor * imagePreview.getImage().getHeight());
             }
         });
 
