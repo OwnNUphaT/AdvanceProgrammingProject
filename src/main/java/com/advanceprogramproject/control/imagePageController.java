@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -36,6 +37,10 @@ public class imagePageController implements Initializable {
     private Slider qualitySlider;
     @FXML
     private Button BackBtnImage;
+    @FXML
+    private TextField widthField;
+    @FXML
+    private TextField heightField;
     private Scene scene;
 
     @FXML
@@ -145,6 +150,14 @@ public class imagePageController implements Initializable {
                     throw new RuntimeException();
                 }
 
+            });
+
+            //Set Image width and height
+            widthField.setOnAction(event -> {
+                imagePreview.setFitWidth(Double.parseDouble(widthField.getText()));
+            });
+            heightField.setOnAction(event -> {
+                imagePreview.setFitHeight(Double.parseDouble(heightField.getText()));
             });
 
         }
