@@ -70,6 +70,38 @@ public class imagePageController implements Initializable {
         // Update the label to show the initial percentage
         dimensionLabel.setText(Integer.toString((int) initialPercent) + "%");
 
+
+        DataModel dataModel = DataModel.getInstance();
+
+        // Check if the file path is not null before using it
+        if (dataModel.getDropFilePath() != null) {
+            // Use dataModel.getDropFilePath() to access the file path
+            String filePath = dataModel.getDropFilePath();
+            if (filePath != null) {
+                File file = new File(filePath);
+                if (file.exists()) {
+                    try {
+                        // Convert the file path to a URL with the file: protocol
+                        URL fileUrl = file.toURI().toURL();
+
+                        // Load the image using the URL
+                        Image image = new Image(fileUrl.toString());
+
+                        // Set the loaded image to the ImageView
+                        imagePreview.setImage(image);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (RuntimeException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    System.out.println("File does not exist: " + filePath);
+                }
+                // Load the image or perform other operations with the file path
+            } else {
+                System.out.println("File path is null or not set.");
+            }
+
         // Add the listener to adjust image dimensions
         dimensionSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -103,38 +135,6 @@ public class imagePageController implements Initializable {
 
             }
         });
-
-        //TODO: Please Test this function
-        DataModel dataModel = DataModel.getInstance();
-
-        // Check if the file path is not null before using it
-        if (dataModel.getDropFilePath() != null) {
-            // Use dataModel.getDropFilePath() to access the file path
-            String filePath = dataModel.getDropFilePath();
-            if (filePath != null) {
-                File file = new File(filePath);
-                if (file.exists()) {
-                    try {
-                        // Convert the file path to a URL with the file: protocol
-                        URL fileUrl = file.toURI().toURL();
-
-                        // Load the image using the URL
-                        Image image = new Image(fileUrl.toString());
-
-                        // Set the loaded image to the ImageView
-                        imagePreview.setImage(image);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    } catch (RuntimeException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    System.out.println("File does not exist: " + filePath);
-                }
-                // Load the image or perform other operations with the file path
-            } else {
-                System.out.println("File path is null or not set.");
-            }
 
 
             //Back to main-view page.
@@ -173,9 +173,9 @@ public class imagePageController implements Initializable {
             Image imageDone = new Image(dataModel.getDropFilePath());
             imageFormat.setOnAction(event -> {
                 if ("PNG".equals(selectedFormat)) {
-                    formatConverter.convertAndSaveImage(imageDone, "PNG");
+                    formatConverter.convertImage(imageDone);
                 }else {
-                    formatConverter.convertAndSaveImage(imageDone, "JPG");
+                    formatConverter.convertImage(imageDone);
                 }
             });
 
@@ -186,12 +186,12 @@ public class imagePageController implements Initializable {
                 fileChooser.setTitle("Save Edited Image");
 
                 // Set the default file name (you can change this as needed)
-                fileChooser.setInitialFileName("edited_image.png");
+                fileChooser.setInitialFileName("edited_image." + selectedFormat);
 
                 // Show the save dialog and get the selected file
                 File selectedFile = fileChooser.showSaveDialog(stage);
                 try {
-                    ImageIO.write(formatConverter.convertFXImageToBufferedImage(imageDone), selectedFormat, selectedFile );
+                    ImageIO.write(formatConverter.convertImage(imageDone), selectedFormat, selectedFile );
                 }catch (IOException e) {
                     e.getMessage();
                 }
