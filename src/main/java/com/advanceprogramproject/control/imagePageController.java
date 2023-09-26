@@ -51,21 +51,31 @@ public class imagePageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Calculate the initial percentage based on the original size
+        double initialPercent = 50.0; // 50% represents the original size
 
-        //dimension slider percentage
-        // Add a listener to the slider to update the label and change image dimensions
+        // Set the initial value of the dimension slider
+        dimensionSlider.setValue(initialPercent);
+
+        // Update the label to show the initial percentage
+        dimensionLabel.setText(Integer.toString((int) initialPercent) + "%");
+
+        // Add the listener to adjust image dimensions
         dimensionSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
                 int percent = (int) dimensionSlider.getValue();
                 dimensionLabel.setText(Integer.toString(percent) + "%");
 
                 // Adjust the image dimensions based on the slider value
+                double originalWidth = imagePreview.getImage().getWidth();
+                double originalHeight = imagePreview.getImage().getHeight();
                 double scaleFactor = percent / 100.0;
-                imagePreview.setFitWidth(scaleFactor * imagePreview.getImage().getWidth());
-                imagePreview.setFitHeight(scaleFactor * imagePreview.getImage().getHeight());
+                imagePreview.setFitWidth(scaleFactor * originalWidth);
+                imagePreview.setFitHeight(scaleFactor * originalHeight);
             }
         });
+
 
         //quality slider percentage
         qualitySlider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -73,6 +83,14 @@ public class imagePageController implements Initializable {
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 percent = (int) qualitySlider.getValue();
                 qualityLabel.setText(Integer.toString(percent) + "%");
+
+                // Calculate the smoothing value based on the quality percentage.
+                // Assuming that higher quality means more smoothing.
+                double smoothingValue = (100.0 - percent) / 100.0; // Inverse relationship
+
+                // Set the smoothing value to control image quality.
+                imagePreview.setSmooth(smoothingValue > 0.0);
+
             }
         });
 
