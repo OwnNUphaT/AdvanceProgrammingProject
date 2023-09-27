@@ -1,9 +1,12 @@
 package com.advanceprogramproject.model;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public class DataModel {
     private static DataModel instance;
-    private String dropFilePath;
-
+    private List<File> dropFilePaths = new ArrayList<>();
     private String fileName;
 
     public String getFileName() {
@@ -25,13 +28,15 @@ public class DataModel {
         return instance;
     }
 
-
-
-    public String getDropFilePath() {
-        return dropFilePath;
+    public List<File> getDropFilePaths() {
+        return dropFilePaths;
     }
 
-    public void setDropFilePath(String dropFilePath) {
-        this.dropFilePath = dropFilePath;
+    public void setDropFilePaths(List<File> dropFilePaths) {
+        this.dropFilePaths = dropFilePaths;
+    }
+
+    public void addDropFilePath(File dropFilePath) {
+        this.dropFilePaths.add(dropFilePath);
     }
 }

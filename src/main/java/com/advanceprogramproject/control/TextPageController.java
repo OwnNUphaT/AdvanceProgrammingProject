@@ -163,9 +163,9 @@ public class TextPageController implements Initializable {
         DataModel dataModel = DataModel.getInstance();
 
         // Check if the file path is not null before using it
-        if (dataModel.getDropFilePath() != null) {
+        if (dataModel.getDropFilePaths() != null) {
             // Use dataModel.getDropFilePath() to access the file path
-            String filePath = dataModel.getDropFilePath();
+            String filePath = String.valueOf(dataModel.getDropFilePaths());
             if (filePath != null) {
                 File file = new File(filePath);
                 if (file.exists()) {

@@ -17,11 +17,14 @@ import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+
 
 public class imagePageController implements Initializable {
     private Stage stage;
@@ -46,7 +49,7 @@ public class imagePageController implements Initializable {
     private Scene scene;
 
     @FXML
-    private ImageView imagePreview;
+    private ListView imagePreview;
 
     private DataModel dataModel;
     int percent;
@@ -71,35 +74,16 @@ public class imagePageController implements Initializable {
 
 
         DataModel dataModel = DataModel.getInstance();
+        List<File> droppedFiles = dataModel.getDropFilePaths();
 
-        // Check if the file path is not null before using it
-        if (dataModel.getDropFilePath() != null) {
-            // Use dataModel.getDropFilePath() to access the file path
-            String filePath = dataModel.getDropFilePath();
-            if (filePath != null) {
-                File file = new File(filePath);
-                if (file.exists()) {
-                    try {
-                        // Convert the file path to a URL with the file: protocol
-                        URL fileUrl = file.toURI().toURL();
-
-                        // Load the image using the URL
-                        Image image = new Image(fileUrl.toString());
-
-                        // Set the loaded image to the ImageView
-                        imagePreview.setImage(image);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    } catch (RuntimeException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    System.out.println("File does not exist: " + filePath);
-                }
-                // Load the image or perform other operations with the file path
-            } else {
-                System.out.println("File path is null or not set.");
+        if (droppedFiles != null && !droppedFiles.isEmpty()) {
+            for (File file : droppedFiles) {
+                String fileName = file.getName();
+                imagePreview.getItems().add(fileName);
             }
+        }
+
+
 
         // Add the listener to adjust image dimensions
         dimensionSlider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -108,12 +92,6 @@ public class imagePageController implements Initializable {
                 int percent = (int) dimensionSlider.getValue();
                 dimensionLabel.setText(Integer.toString(percent) + "%");
 
-                // Adjust the image dimensions based on the slider value
-                double originalWidth = imagePreview.getImage().getWidth();
-                double originalHeight = imagePreview.getImage().getHeight();
-                double scaleFactor = percent / 100.0;
-                imagePreview.setFitWidth(scaleFactor * originalWidth);
-                imagePreview.setFitHeight(scaleFactor * originalHeight);
             }
         });
 
@@ -129,9 +107,6 @@ public class imagePageController implements Initializable {
                 // Assuming that higher quality means more smoothing.
                 double smoothingValue = (100.0 - percent) / 100.0; // Inverse relationship
 
-                // Set the smoothing value to control image quality.
-                imagePreview.setSmooth(smoothingValue > 0.0);
-
             }
         });
 
@@ -140,6 +115,7 @@ public class imagePageController implements Initializable {
 
 
         //Download Button
+        // Download Button
         downloadBtn.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Save Image");
@@ -148,21 +124,37 @@ public class imagePageController implements Initializable {
                     new FileChooser.ExtensionFilter("PNG", "*.png")
             );
 
-            // Selected the format
+            // Selected format
             String selectedFormat = (String) imageFormat.getSelectionModel().getSelectedItem();
-
 
             // Choose the directory for the file
             File file = fileChooser.showSaveDialog(stage);
 
             if (file != null) {
                 try {
-                    ImageIO.write(SwingFXUtils.fromFXImage(imagePreview.getImage(), null), selectedFormat, file);
+                    // Check if any item is selected in the ListView
+                    if (!imagePreview.getSelectionModel().getSelectedItems().isEmpty()) {
+                        String fileName = (String) imagePreview.getSelectionModel().getSelectedItem();
+
+                        // Load the original image
+                        String fileImage = dataModel.getDropFilePaths().get(0).toString(); // Assuming there's only one image
+                        Image image = new Image(new File(fileImage).toURI().toURL().toString());
+
+                        // Convert the JavaFX Image to a BufferedImage
+                        BufferedImage originalImage = SwingFXUtils.fromFXImage(image, null);
+
+                        // Save the image in the selected format
+                        ImageIO.write(originalImage, selectedFormat, file);
+                    } else {
+                        showAlert("Error", "No image selected to save.");
+                    }
                 } catch (IOException ex) {
                     System.out.println(ex.getMessage());
                 }
             }
         });
+
+
 
 
         //Back to main-view page.
@@ -184,8 +176,6 @@ public class imagePageController implements Initializable {
             }
 
         });
-
-        }
     }
     // Method to show a simple alert dialog
     private void showAlert(String title, String message) {

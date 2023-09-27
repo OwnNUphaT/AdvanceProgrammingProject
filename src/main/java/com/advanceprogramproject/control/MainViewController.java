@@ -74,8 +74,9 @@ public class MainViewController implements Initializable {
 
                     // Set the file path in the dataModel
                     DataModel dataModel = DataModel.getInstance();
-                    dataModel.setDropFilePath(String.valueOf(file));
+                    dataModel.addDropFilePath(file);
                     dataModel.setFileName(fileName);
+
 
 
                     // Add the file name to the inputListView and the absolute path to the list
@@ -114,10 +115,10 @@ public class MainViewController implements Initializable {
                 // Hidden the ImageImport
                 importLabel.setVisible(false);
                 importImage.setVisible(false);
-
+                
                 // Set the file path in the dataModel
                 DataModel dataModel = DataModel.getInstance();
-                dataModel.setDropFilePath(selectedFile.getAbsolutePath());
+                dataModel.addDropFilePath(file);
                 dataModel.setFileName(fileName);
 
 
