@@ -2,6 +2,7 @@ package com.advanceprogramproject.control;
 
 import com.advanceprogramproject.model.DataModel;
 import com.advanceprogramproject.model.ImageFormatConverter;
+import com.advanceprogramproject.model.newFilegenrate;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -169,15 +170,8 @@ public class imagePageController implements Initializable {
             ImageFormatConverter formatConverter = new ImageFormatConverter();
             String[] fileFormat = {"JPG", "PNG"};
             imageFormat.getItems().addAll(fileFormat);
-            String selectedFormat = (String) imageFormat.getSelectionModel().getSelectedItem();
+
             Image imageDone = new Image(dataModel.getDropFilePath());
-            imageFormat.setOnAction(event -> {
-                if ("PNG".equals(selectedFormat)) {
-                    formatConverter.convertImage(imageDone);
-                }else {
-                    formatConverter.convertImage(imageDone);
-                }
-            });
 
             //Download Button
             downloadBtn.setOnAction(event -> {
@@ -186,20 +180,40 @@ public class imagePageController implements Initializable {
                 fileChooser.setTitle("Save Edited Image");
 
                 // Set the default file name (you can change this as needed)
-                fileChooser.setInitialFileName("edited_image." + selectedFormat);
+                String selectedFormat = (String) imageFormat.getSelectionModel().getSelectedItem();
+                String defaultFileName = "edited_image." + selectedFormat.toLowerCase();
+                fileChooser.setInitialFileName(defaultFileName);
 
                 // Show the save dialog and get the selected file
                 File selectedFile = fileChooser.showSaveDialog(stage);
-                try {
-                    ImageIO.write(formatConverter.convertImage(imageDone), selectedFormat, selectedFile );
-                }catch (IOException e) {
-                    e.getMessage();
-                }
 
+                try {
+                    // Generate a unique filename to avoid overwriting
+                    newFilegenrate uniqueFileName = new newFilegenrate();
+                    uniqueFileName.generateUniqueFileName(selectedFile.getParentFile(), defaultFileName);
+
+                    // Create a new File object with the unique filename
+                    File uniqueFile = new File(selectedFile.getParent(), String.valueOf(uniqueFileName));
+
+                    ImageFormatConverter.convertImage(imageDone, selectedFormat, uniqueFile);
+
+                    // Inform the user that the image has been saved successfully
+                    showAlert("Image Saved", "The image has been saved successfully.");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert("Error", "An error occurred while saving the image.");
+
+                }
             });
 
-
         }
-
+    }
+    // Method to show a simple alert dialog
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
