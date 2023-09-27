@@ -190,15 +190,20 @@ public class imagePageController implements Initializable {
                 try {
                     // Generate a unique filename to avoid overwriting
                     newFilegenrate uniqueFileName = new newFilegenrate();
-                    uniqueFileName.generateUniqueFileName(selectedFile.getParentFile(), defaultFileName);
+                    uniqueFileName.generateUniqueFileName(selectedFile, defaultFileName);
 
                     // Create a new File object with the unique filename
                     File uniqueFile = new File(selectedFile.getParent(), String.valueOf(uniqueFileName));
 
                     ImageFormatConverter.convertImage(imageDone, selectedFormat, uniqueFile);
 
-                    // Inform the user that the image has been saved successfully
-                    showAlert("Image Saved", "The image has been saved successfully.");
+                    if (uniqueFile.exists()) {
+                        showAlert("Error", "The image is already exist");
+                    } else {
+                        // Inform the user that the image has been saved successfully
+                        showAlert("Image Saved", "The image has been saved successfully.");
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     showAlert("Error", "An error occurred while saving the image.");

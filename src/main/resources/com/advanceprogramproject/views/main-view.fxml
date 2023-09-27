@@ -41,6 +41,16 @@
          </image>
       </ImageView>
       <Label fx:id="importLabel" layoutX="398.0" layoutY="284.0" text="Drags jpg or png file here" />
+      <Button fx:id="chooseFileBtn" layoutX="398.0" layoutY="388.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="136.0" style="-fx-background-color: rgb(229, 27, 35); -fx-background-radius: 15;" text="Choose File" textFill="#fffcfc">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Label layoutX="453.0" layoutY="358.0" prefHeight="18.0" prefWidth="26.0" text="OR">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
    </children>
 
 </AnchorPane>

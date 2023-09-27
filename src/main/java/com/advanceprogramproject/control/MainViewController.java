@@ -9,9 +9,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -31,6 +33,8 @@ public class MainViewController implements Initializable {
     private Label importLabel;
     @FXML
     private Button nextBtn;
+    @FXML
+    private Button chooseFileBtn;
 
     public ArrayList<String> imagesFile = new ArrayList<>();
     private DataModel dataModel = new DataModel();
@@ -87,6 +91,40 @@ public class MainViewController implements Initializable {
             }
             event.consume();
 
+        });
+
+        // Choose File Button
+        chooseFileBtn.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose an Image File");
+
+            // Set the file extension filters if needed (e.g., for images)
+            FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg");
+            fileChooser.getExtensionFilters().add(imageFilter);
+
+            // Show the file dialog and get the selected file
+            File selectedFile = fileChooser.showOpenDialog(stage);
+
+            if (selectedFile != null) {
+                File file = selectedFile;
+                String fileName = file.getName(); // Extract only the file name
+                importListView.getItems().add(fileName);
+                System.out.println("File path set: " + file.getAbsolutePath());
+
+                // Hidden the ImageImport
+                importLabel.setVisible(false);
+                importImage.setVisible(false);
+
+                // Set the file path in the dataModel
+                DataModel dataModel = DataModel.getInstance();
+                dataModel.setDropFilePath(selectedFile.getAbsolutePath());
+                dataModel.setFileName(fileName);
+
+
+
+                // Add the file name to the inputListView and the absolute path to the list
+                fileMap.put(fileName, file.getAbsolutePath());
+            }
         });
 
         // Goes to the imported-page.fxml when nextBtn is push.
