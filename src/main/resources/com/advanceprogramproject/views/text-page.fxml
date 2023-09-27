@@ -23,7 +23,7 @@
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <Button fx:id="downloadBtn" cache="true" layoutX="123.0" layoutY="319.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Download" textFill="WHITE" AnchorPane.bottomAnchor="129.0" AnchorPane.leftAnchor="123.0" AnchorPane.rightAnchor="123.0" AnchorPane.topAnchor="319.0">
+                <Button fx:id="downloadBtn" cache="true" layoutX="123.0" layoutY="319.0" mnemonicParsing="false" onAction="#handleDownloadAction" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Download" textFill="WHITE" AnchorPane.bottomAnchor="129.0" AnchorPane.leftAnchor="123.0" AnchorPane.rightAnchor="123.0" AnchorPane.topAnchor="319.0">
                     <font>
                         <Font size="14.0" />
                     </font>
@@ -39,12 +39,12 @@
                         <Image url="@../icons/download-circular-button.png" />
                     </image>
                 </ImageView>
-            <ChoiceBox fx:id="formatDrop" layoutX="86.0" layoutY="386.0" prefWidth="200.0" />
-            <Label layoutX="86.0" layoutY="363.0" text="Image Format:">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
+                <ChoiceBox fx:id="formatDrop" layoutX="86.0" layoutY="386.0" prefWidth="200.0" />
+                <Label layoutX="86.0" layoutY="363.0" text="Image Format:">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
             </children></AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
             <children>
@@ -74,24 +74,35 @@
                     </font>
                 </Label>
                 <ChoiceBox fx:id="fontDrop" layoutX="76.0" layoutY="151.0" prefWidth="400.0" />
-            <Slider fx:id="SizeSlider" layoutX="76.0" layoutY="372.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
-            <Label fx:id="SizeLabel" layoutX="260.0" layoutY="397.0" text="0%" />
-            <Label layoutX="80.0" layoutY="348.0" text="Size:">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Button fx:id="BackBtnText" cache="true" layoutX="411.0" layoutY="429.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Back" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
+                <Slider fx:id="SizeSlider" layoutX="76.0" layoutY="372.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
+                <Label fx:id="SizeLabel" layoutX="260.0" layoutY="397.0" text="0%" />
+                <Label layoutX="80.0" layoutY="348.0" text="Size:">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <Button fx:id="BackBtnText" cache="true" layoutX="411.0" layoutY="429.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Back" textFill="WHITE">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
+                <Button fx:id="applyWatermarkButton" onAction="#applyWatermark" cache="true" layoutX="386.0" layoutY="74.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Apply" textFill="WHITE">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
             </children></AnchorPane>
     </items>
 </SplitPane>

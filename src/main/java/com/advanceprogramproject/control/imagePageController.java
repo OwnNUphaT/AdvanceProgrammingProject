@@ -1,10 +1,9 @@
 package com.advanceprogramproject.control;
 
 import com.advanceprogramproject.model.DataModel;
-import com.advanceprogramproject.model.ImageFormatConverter;
-import com.advanceprogramproject.model.newFilegenrate;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,10 +17,7 @@ import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -60,10 +56,12 @@ public class imagePageController implements Initializable {
         this.stage = stage;
     }
 
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Calculate the initial percentage based on the original size
-        double initialPercent = 50.0; // 50% represents the original size
+        double initialPercent = 50.0;
 
         // Set the initial value of the dimension slider
         dimensionSlider.setValue(initialPercent);
@@ -137,79 +135,55 @@ public class imagePageController implements Initializable {
             }
         });
 
+        String[] fileFormat = {"JPG", "PNG"};
+        imageFormat.getItems().addAll(fileFormat);
 
-            //Back to main-view page.
-            BackBtnImage.setOnAction(event -> {
+
+        //Download Button
+        downloadBtn.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Image");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                    new FileChooser.ExtensionFilter("PNG", "*.png")
+            );
+
+            // Selected the format
+            String selectedFormat = (String) imageFormat.getSelectionModel().getSelectedItem();
+
+
+            // Choose the directory for the file
+            File file = fileChooser.showSaveDialog(stage);
+
+            if (file != null) {
                 try {
-                    stage.close();
-
-                    FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
-                    Parent root = loader.load();
-                    // Pass the current stage reference to the new controller
-                    ImportPageController importPageController = loader.getController();
-                    importPageController.setStage(stage);
-
-                    scene = new Scene(root);
-                    stage.setScene(scene);
-                    stage.show();
-                } catch (IOException e) {
-                    throw new RuntimeException();
+                    ImageIO.write(SwingFXUtils.fromFXImage(imagePreview.getImage(), null), selectedFormat, file);
+                } catch (IOException ex) {
+                    System.out.println(ex.getMessage());
                 }
+            }
+        });
 
-            });
 
-            //Set Image width and height
-            widthField.setOnAction(event -> {
-                imagePreview.setFitWidth(Double.parseDouble(widthField.getText()));
-            });
-            heightField.setOnAction(event -> {
-                imagePreview.setFitHeight(Double.parseDouble(heightField.getText()));
-            });
+        //Back to main-view page.
+        BackBtnImage.setOnAction(event -> {
+            try {
+                stage.close();
 
-            //Set Image Format
-            ImageFormatConverter formatConverter = new ImageFormatConverter();
-            String[] fileFormat = {"JPG", "PNG"};
-            imageFormat.getItems().addAll(fileFormat);
+                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
+                Parent root = loader.load();
+                // Pass the current stage reference to the new controller
+                ImportPageController importPageController = loader.getController();
+                importPageController.setStage(stage);
 
-            Image imageDone = new Image(dataModel.getDropFilePath());
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
 
-            //Download Button
-            downloadBtn.setOnAction(event -> {
-                // Create a FileChooser to select the download location
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Save Edited Image");
-
-                // Set the default file name (you can change this as needed)
-                String selectedFormat = (String) imageFormat.getSelectionModel().getSelectedItem();
-                String defaultFileName = "edited_image." + selectedFormat.toLowerCase();
-                fileChooser.setInitialFileName(defaultFileName);
-
-                // Show the save dialog and get the selected file
-                File selectedFile = fileChooser.showSaveDialog(stage);
-
-                try {
-                    // Generate a unique filename to avoid overwriting
-                    newFilegenrate uniqueFileName = new newFilegenrate();
-                    uniqueFileName.generateUniqueFileName(selectedFile, defaultFileName);
-
-                    // Create a new File object with the unique filename
-                    File uniqueFile = new File(selectedFile.getParent(), String.valueOf(uniqueFileName));
-
-                    ImageFormatConverter.convertImage(imageDone, selectedFormat, uniqueFile);
-
-                    if (uniqueFile.exists()) {
-                        showAlert("Error", "The image is already exist");
-                    } else {
-                        // Inform the user that the image has been saved successfully
-                        showAlert("Image Saved", "The image has been saved successfully.");
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    showAlert("Error", "An error occurred while saving the image.");
-
-                }
-            });
+        });
 
         }
     }
