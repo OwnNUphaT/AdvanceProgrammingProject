@@ -9,10 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -36,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TextPageController implements Initializable {
@@ -60,6 +58,8 @@ public class TextPageController implements Initializable {
     private TextField textField;
     @FXML
     private Button applyWatermarkButton;
+    @FXML
+    private ChoiceBox<String> fontDrop;
 
 
     private Scene scene;
@@ -87,11 +87,19 @@ public class TextPageController implements Initializable {
         }
     }
 
+
     @FXML
     public void applyWatermark() {
         String watermarkText = textField.getText();
         if (watermarkText.isEmpty()) {
             return;
+        }
+
+        // Get the selected font from the ChoiceBox
+        String selectedFont = fontDrop.getValue();
+        if (selectedFont == null) {
+            // If no font is selected, use a default font
+            selectedFont = "Arial";
         }
 
         Image originalImage = imagePreview.getImage();
@@ -102,15 +110,14 @@ public class TextPageController implements Initializable {
         gc.drawImage(originalImage, 0, 0);
 
         // Set up graphics context for watermarking
-        gc.setFont(new Font("Arial", 350));
+        gc.setFont(new Font(selectedFont, 350)); // Use the selected font here
         gc.setFill(Color.BLACK);
         gc.setGlobalAlpha(0.5);
 
         Text textNode = new Text(watermarkText);
-        textNode.setFont(new Font("Arial", 100));
+        textNode.setFont(new Font(selectedFont, 100)); // Use the selected font here
         double textWidth = textNode.getLayoutBounds().getWidth();
         double textHeight = textNode.getLayoutBounds().getHeight();
-
 
         // Set rotation - Translate to center, rotate, then translate back
         gc.translate(originalImage.getWidth() / 2, originalImage.getHeight() / 2);
@@ -123,15 +130,17 @@ public class TextPageController implements Initializable {
 
 
 
-
-
-
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Get a list of all available font families
+        List<String> fontFamilies = Font.getFamilies();
+        fontDrop.getItems().addAll(fontFamilies);
+
+        // Set a custom cell factory to display the fonts using the selected font
 
         //Visibility slider percentage.
         VisibilitySlider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -165,16 +174,15 @@ public class TextPageController implements Initializable {
         // Check if the file path is not null before using it
         if (dataModel.getDropFilePaths() != null) {
             // Use dataModel.getDropFilePath() to access the file path
-            String filePath = String.valueOf(dataModel.getDropFilePaths());
-            if (filePath != null) {
-                File file = new File(filePath);
+            // Load the original image
+            String fileImage = dataModel.getDropFilePaths().get(0).toString();
+            if (fileImage != null) {
+                File file = new File(fileImage);
                 if (file.exists()) {
                     try {
-                        // Convert the file path to a URL with the file: protocol
-                        URL fileUrl = file.toURI().toURL();
 
-                        // Load the image using the URL
-                        Image image = new Image(fileUrl.toString());
+                         // Assuming there's only one image
+                        Image image = new Image(new File(fileImage).toURI().toURL().toString());
 
                         // Set the loaded image to the ImageView
                         imagePreview.setImage(image);
@@ -184,7 +192,7 @@ public class TextPageController implements Initializable {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    System.out.println("File does not exist: " + filePath);
+                    System.out.println("File does not exist: " + fileImage);
                 }
                 // Load the image or perform other operations with the file path
             } else {
