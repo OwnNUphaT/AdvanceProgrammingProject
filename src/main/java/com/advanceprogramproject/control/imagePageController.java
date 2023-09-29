@@ -49,7 +49,7 @@ public class imagePageController implements Initializable {
     private Scene scene;
 
     @FXML
-    private ListView imagePreview;
+    private ImageView imagePreview;
 
     private DataModel dataModel;
     int percent;
@@ -74,71 +74,95 @@ public class imagePageController implements Initializable {
 
 
         DataModel dataModel = DataModel.getInstance();
-        String selectedFile = dataModel.getSelected();
+        File selectedFile = dataModel.getSelected();
         System.out.println("Selected File: " + selectedFile);
 
-        if (selectedFile != null && !selectedFile.isEmpty()) {
-            imagePreview.getItems().add(selectedFile);
+        // Check if the file path is not null before using it
+        if (selectedFile != null) {
+            // Use dataModel.getDropFilePath() to access the file path
+            String filePath = selectedFile.getAbsolutePath();
+            if (filePath != null) {
+                File file = new File(filePath);
+                if (file.exists()) {
+                    try {
+                        // Convert the file path to a URL with the file: protocol
+                        URL fileUrl = file.toURI().toURL();
+
+                        // Load the image using the URL
+                        Image image = new Image(fileUrl.toString());
+
+                        // Set the loaded image to the ImageView
+                        imagePreview.setImage(image);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (RuntimeException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    System.out.println("File does not exist: " + filePath);
+                }
+                // Load the image or perform other operations with the file path
+            } else {
+                System.out.println("File path is null or not set.");
+            }
+
+
+            // Add the listener to adjust image dimensions
+            dimensionSlider.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+                    int percent = (int) dimensionSlider.getValue();
+                    dimensionLabel.setText(Integer.toString(percent) + "%");
+
+                }
+            });
+
+
+            //quality slider percentage
+            qualitySlider.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                    percent = (int) qualitySlider.getValue();
+                    qualityLabel.setText(Integer.toString(percent) + "%");
+
+                    // Calculate the smoothing value based on the quality percentage.
+                    // Assuming that higher quality means more smoothing.
+                    double smoothingValue = (100.0 - percent) / 100.0; // Inverse relationship
+
+                }
+            });
+
+            String[] fileFormat = {"JPG", "PNG"};
+            imageFormat.getItems().addAll(fileFormat);
+
+
+            // Download Button
+            downloadBtn.setOnAction(event -> saveImage());
+
+
+            //Back to main-view page.
+            BackBtnImage.setOnAction(event -> {
+                try {
+                    stage.close();
+
+                    FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
+                    Parent root = loader.load();
+                    // Pass the current stage reference to the new controller
+                    ImportPageController importPageController = loader.getController();
+                    importPageController.setStage(stage);
+
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException e) {
+                    throw new RuntimeException();
+                }
+
+            });
         }
 
-
-
-        // Add the listener to adjust image dimensions
-        dimensionSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-                int percent = (int) dimensionSlider.getValue();
-                dimensionLabel.setText(Integer.toString(percent) + "%");
-
-            }
-        });
-
-
-        //quality slider percentage
-        qualitySlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                percent = (int) qualitySlider.getValue();
-                qualityLabel.setText(Integer.toString(percent) + "%");
-
-                // Calculate the smoothing value based on the quality percentage.
-                // Assuming that higher quality means more smoothing.
-                double smoothingValue = (100.0 - percent) / 100.0; // Inverse relationship
-
-            }
-        });
-
-        String[] fileFormat = {"JPG", "PNG"};
-        imageFormat.getItems().addAll(fileFormat);
-
-
-        // Download Button
-        downloadBtn.setOnAction(event -> saveImage());
-
-
-
-
-        //Back to main-view page.
-        BackBtnImage.setOnAction(event -> {
-            try {
-                stage.close();
-
-                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
-                Parent root = loader.load();
-                // Pass the current stage reference to the new controller
-                ImportPageController importPageController = loader.getController();
-                importPageController.setStage(stage);
-
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                throw new RuntimeException();
-            }
-
-        });
     }
-    private void saveImage() {
+    private void saveImage () {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Image");
         fileChooser.getExtensionFilters().addAll(
@@ -154,16 +178,12 @@ public class imagePageController implements Initializable {
 
         if (file != null) {
             try {
-                // Check if any item is selected in the ListView
-                if (!imagePreview.getSelectionModel().getSelectedItems().isEmpty()) {
-                    String fileName = (String) imagePreview.getSelectionModel().getSelectedItem();
+                // Check if any item is selected in the ImageView
+                Image selectedImage = imagePreview.getImage();
 
-                    // Load the original image
-                    String fileImage = dataModel.getDropFilePaths().get(0).toString(); // Assuming there's only one image
-                    Image image = new Image(new File(fileImage).toURI().toURL().toString());
-
+                if (selectedImage != null) {
                     // Convert the JavaFX Image to a BufferedImage
-                    BufferedImage originalImage = SwingFXUtils.fromFXImage(image, null);
+                    BufferedImage originalImage = SwingFXUtils.fromFXImage(selectedImage, null);
 
                     // Save the image in the selected format
                     ImageIO.write(originalImage, selectedFormat, file);
@@ -175,6 +195,7 @@ public class imagePageController implements Initializable {
             }
         }
     }
+
     // Method to show a simple alert dialog
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

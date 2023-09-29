@@ -16,10 +16,12 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class imageListController implements Initializable {
+    private HashMap<String, String> fileMap = new HashMap<>();
     private Stage stage;
     @FXML
     private ListView imageLists;
@@ -38,7 +40,9 @@ public class imageListController implements Initializable {
 
         if (droppedFiles != null && !droppedFiles.isEmpty()) {
             for (File file : droppedFiles) {
-                imageLists.getItems().add(file.getName());
+                String fileName = file.getName();
+                imageLists.getItems().addAll(fileName);
+                fileMap.put(fileName, file.getAbsolutePath());
             }
         }
 
@@ -47,7 +51,9 @@ public class imageListController implements Initializable {
         imageLists.setOnMouseClicked((MouseEvent event) -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 // Get the selected item
-                String selected = (String) imageLists.getSelectionModel().getSelectedItem();
+                String selectedFileName = (String) imageLists.getSelectionModel().getSelectedItem();
+                String filePath = fileMap.get(selectedFileName);
+                File selected = new File(filePath);
 
                 // Set the selected file in the DataModel
                 dataModel.setSelectedFile(selected);
