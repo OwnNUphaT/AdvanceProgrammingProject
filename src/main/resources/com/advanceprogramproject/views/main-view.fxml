@@ -12,7 +12,7 @@
 
 <AnchorPane style="-fx-pref-width: 930; -fx-pref-height: 480; -fx-background-color: fffffff;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advanceprogramproject.control.MainViewController">
    <children>
-      <Button fx:id="nextBtn" alignment="CENTER" layoutX="764.0" layoutY="412.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: rgb(229, 27, 35); -fx-font-size: 18; -fx-text-fill: ffffff; -fx-background-radius: 15;" stylesheets="@../fonts.css" text="Next">
+      <Button fx:id="nextBtn" alignment="CENTER" layoutX="764.0" layoutY="412.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: rgb(229, 27, 35); -fx-font-size: 18; -fx-text-fill: ffffff; -fx-background-radius: 15;" text="Next">
          <font>
             <Font size="18.0" />
          </font>
