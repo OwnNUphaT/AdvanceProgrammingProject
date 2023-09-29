@@ -7,7 +7,7 @@ import java.util.List;
 public class DataModel {
     private static DataModel instance;
     private List<File> dropFilePaths = new ArrayList<>();
-    private List<File> selected = new ArrayList<>();
+    private String selected;
     private String fileName;
 
     public String getFileName() {
@@ -33,8 +33,8 @@ public class DataModel {
         return dropFilePaths;
     }
 
-    public void setSelectedFile(List<File> select) {
-        selected = select;
+    public void setSelectedFile(String selected) {
+        this.selected = selected;
     }
 
     public void setDropFilePaths(List<File> dropFilePaths) {

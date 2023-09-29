@@ -1,6 +1,7 @@
 package com.advanceprogramproject.control;
 
 import com.advanceprogramproject.model.DataModel;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -8,6 +9,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -35,13 +38,26 @@ public class imageListController implements Initializable {
 
         if (droppedFiles != null && !droppedFiles.isEmpty()) {
             for (File file : droppedFiles) {
-                String fileName = file.getName();
-                imageLists.getItems().add(fileName);
+                imageLists.getItems().add(file.getName());
             }
         }
 
-        File selected = (File) imageLists.getSelectionModel().getSelectedItems();
-        dataModel.setSelectedFile((List<File>) selected);
+
+
+        imageLists.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                // Get the selected item
+                String selected = (String) imageLists.getSelectionModel().getSelectedItem();
+
+                // Set the selected file in the DataModel
+                dataModel.setSelectedFile(selected);
+
+                // Move to the next page
+                toNextPage();
+            }
+        });
+
+
 
         //Next Page
         startBtn.setOnAction(event -> toNextPage());
