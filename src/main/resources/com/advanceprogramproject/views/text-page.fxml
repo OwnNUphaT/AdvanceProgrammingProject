@@ -85,7 +85,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Button fx:id="applyWatermarkButton" cache="true" layoutX="386.0" layoutY="74.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Apply" textFill="WHITE">
+                <Button fx:id="clear" cache="true" layoutX="386.0" layoutY="74.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Clear" textFill="WHITE">
                     <font>
                         <Font size="14.0" />
                     </font>
