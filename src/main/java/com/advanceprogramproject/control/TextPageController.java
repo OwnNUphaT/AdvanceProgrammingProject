@@ -47,8 +47,6 @@ public class TextPageController implements Initializable {
     @FXML
     private Slider VisibilitySlider;
     @FXML
-    private Slider PaddSlider;
-    @FXML
     private Slider SizeSlider;
     @FXML
     private Button BackBtnText;
@@ -151,14 +149,7 @@ public class TextPageController implements Initializable {
             }
         });
 
-        //Padding slider percentage.
-        PaddSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                percent = (int) PaddSlider.getValue();
-                PaddingLabel.setText(Integer.toString(percent) + "%");
-            }
-        });
+        //TODO: Adding Alignment to the watermark
 
         //Size slider percentage.
         SizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
