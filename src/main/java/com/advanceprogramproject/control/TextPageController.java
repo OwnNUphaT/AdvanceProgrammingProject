@@ -40,8 +40,6 @@ public class TextPageController implements Initializable {
     @FXML
     private Label VisibilityLabel;
     @FXML
-    private Label PaddingLabel;
-    @FXML
     private Label SizeLabel;
     @FXML
     private Slider VisibilitySlider;
@@ -189,6 +187,7 @@ public class TextPageController implements Initializable {
     }
     // Method to update the watermark based on the current settings
     private void updateWatermark() {
+        // TODO: Check why the text is overlay
         String watermarkText = textField.getText();
         if (watermarkText.isEmpty()) {
             return;
@@ -218,7 +217,7 @@ public class TextPageController implements Initializable {
         double textWidth = textNode.getLayoutBounds().getWidth();
         double textHeight = textNode.getLayoutBounds().getHeight();
 
-        // Get rotation value from the slider
+        //TODO: Get rotation value from the slider
         double rotationValue = rotationSlider.getValue();
 
         // Set rotation - Translate to center, rotate, then translate back
