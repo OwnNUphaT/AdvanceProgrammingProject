@@ -114,45 +114,8 @@ public class imagePageController implements Initializable {
         imageFormat.getItems().addAll(fileFormat);
 
 
-        //Download Button
         // Download Button
-        downloadBtn.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save Image");
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("JPG", "*.jpg"),
-                    new FileChooser.ExtensionFilter("PNG", "*.png")
-            );
-
-            // Selected format
-            String selectedFormat = (String) imageFormat.getSelectionModel().getSelectedItem();
-
-            // Choose the directory for the file
-            File file = fileChooser.showSaveDialog(stage);
-
-            if (file != null) {
-                try {
-                    // Check if any item is selected in the ListView
-                    if (!imagePreview.getSelectionModel().getSelectedItems().isEmpty()) {
-                        String fileName = (String) imagePreview.getSelectionModel().getSelectedItem();
-
-                        // Load the original image
-                        String fileImage = dataModel.getDropFilePaths().get(0).toString(); // Assuming there's only one image
-                        Image image = new Image(new File(fileImage).toURI().toURL().toString());
-
-                        // Convert the JavaFX Image to a BufferedImage
-                        BufferedImage originalImage = SwingFXUtils.fromFXImage(image, null);
-
-                        // Save the image in the selected format
-                        ImageIO.write(originalImage, selectedFormat, file);
-                    } else {
-                        showAlert("Error", "No image selected to save.");
-                    }
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                }
-            }
-        });
+        downloadBtn.setOnAction(event -> saveImage());
 
 
 
@@ -176,6 +139,43 @@ public class imagePageController implements Initializable {
             }
 
         });
+    }
+    private void saveImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Image");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+        );
+
+        // Selected format
+        String selectedFormat = (String) imageFormat.getSelectionModel().getSelectedItem();
+
+        // Choose the directory for the file
+        File file = fileChooser.showSaveDialog(stage);
+
+        if (file != null) {
+            try {
+                // Check if any item is selected in the ListView
+                if (!imagePreview.getSelectionModel().getSelectedItems().isEmpty()) {
+                    String fileName = (String) imagePreview.getSelectionModel().getSelectedItem();
+
+                    // Load the original image
+                    String fileImage = dataModel.getDropFilePaths().get(0).toString(); // Assuming there's only one image
+                    Image image = new Image(new File(fileImage).toURI().toURL().toString());
+
+                    // Convert the JavaFX Image to a BufferedImage
+                    BufferedImage originalImage = SwingFXUtils.fromFXImage(image, null);
+
+                    // Save the image in the selected format
+                    ImageIO.write(originalImage, selectedFormat, file);
+                } else {
+                    showAlert("Error", "No image selected to save.");
+                }
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
     }
     // Method to show a simple alert dialog
     private void showAlert(String title, String message) {
