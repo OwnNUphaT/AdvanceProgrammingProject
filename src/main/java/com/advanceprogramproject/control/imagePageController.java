@@ -74,13 +74,11 @@ public class imagePageController implements Initializable {
 
 
         DataModel dataModel = DataModel.getInstance();
-        List<File> droppedFiles = dataModel.getDropFilePaths();
+        String selectedFile = dataModel.getSelected();
+        System.out.println("Selected File: " + selectedFile);
 
-        if (droppedFiles != null && !droppedFiles.isEmpty()) {
-            for (File file : droppedFiles) {
-                String fileName = file.getName();
-                imagePreview.getItems().add(fileName);
-            }
+        if (selectedFile != null && !selectedFile.isEmpty()) {
+            imagePreview.getItems().add(selectedFile);
         }
 
 

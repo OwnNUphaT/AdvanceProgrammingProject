@@ -8,7 +8,6 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -34,11 +33,6 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="261.0" layoutY="334.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../icons/download-circular-button.png" />
-                    </image>
-                </ImageView>
                 <ChoiceBox fx:id="formatDrop" layoutX="86.0" layoutY="386.0" prefWidth="200.0" />
                 <Label layoutX="86.0" layoutY="363.0" text="Image Format:">
                     <font>
@@ -85,7 +79,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Button fx:id="clear" cache="true" layoutX="386.0" layoutY="74.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Clear" textFill="WHITE">
+                <Button fx:id="applyWatermarkButton" cache="true" layoutX="386.0" layoutY="74.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Apply" textFill="WHITE">
                     <font>
                         <Font size="14.0" />
                     </font>

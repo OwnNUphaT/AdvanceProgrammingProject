@@ -18,7 +18,7 @@
    <items>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="478.0" prefWidth="330.0">
          <children>
-            <Label layoutX="83.0" layoutY="38.0" text="Image Resize">
+            <Label layoutX="58.0" layoutY="55.0" text="Image Resize">
                <font>
                   <Font size="14.0" />
                </font>
@@ -40,6 +40,7 @@
                </image>
             </ImageView>
             <ListView fx:id="imagePreview" layoutX="83.0" layoutY="75.0" prefHeight="200.0" prefWidth="200.0" />
+            <ImageView fitHeight="193.0" fitWidth="258.0" layoutX="58.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true" />
          </children></AnchorPane>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>

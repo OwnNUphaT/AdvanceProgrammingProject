@@ -37,6 +37,10 @@ public class DataModel {
         this.selected = selected;
     }
 
+    public String getSelected() {
+        return selected;
+    }
+
     public void setDropFilePaths(List<File> dropFilePaths) {
         this.dropFilePaths = dropFilePaths;
     }
