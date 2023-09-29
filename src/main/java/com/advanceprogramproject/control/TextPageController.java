@@ -16,9 +16,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javafx.scene.image.WritableImage;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.text.Text;
 
 import javafx.scene.canvas.Canvas;
@@ -33,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -58,6 +56,8 @@ public class TextPageController implements Initializable {
     private Button applyWatermarkButton;
     @FXML
     private ChoiceBox<String> fontDrop;
+    @FXML
+    private ChoiceBox alignmentDrop;
 
 
     private Scene scene;
@@ -138,7 +138,10 @@ public class TextPageController implements Initializable {
         List<String> fontFamilies = Font.getFamilies();
         fontDrop.getItems().addAll(fontFamilies);
 
-        // Set a custom cell factory to display the fonts using the selected font
+        // Adding the alignment Choice Box
+        String[] alignmentList = {"Top Left", "Center", "Top Right", "Bottom Left", "Bottom Right"};
+        alignmentDrop.getItems().addAll(alignmentList);
+
 
         //Visibility slider percentage.
         VisibilitySlider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -149,7 +152,7 @@ public class TextPageController implements Initializable {
             }
         });
 
-        //TODO: Adding Alignment to the watermark
+
 
         //Size slider percentage.
         SizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
