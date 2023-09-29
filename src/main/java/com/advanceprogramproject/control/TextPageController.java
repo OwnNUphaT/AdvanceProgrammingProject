@@ -26,6 +26,7 @@ import javafx.scene.text.Font;
 
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -53,7 +54,7 @@ public class TextPageController implements Initializable {
     @FXML
     private TextField textField;
     @FXML
-    private Button applyWatermarkButton;
+    private Button clear;
     @FXML
     private ChoiceBox<String> fontDrop;
     @FXML
@@ -69,8 +70,7 @@ public class TextPageController implements Initializable {
         fileChooser.setTitle("Save Image");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("JPG", "*.jpg"),
-                new FileChooser.ExtensionFilter("PNG", "*.png"),
-                new FileChooser.ExtensionFilter("All Files", "*.*")
+                new FileChooser.ExtensionFilter("PNG", "*.png")
         );
 
         // Choose the directory for the file
@@ -78,7 +78,8 @@ public class TextPageController implements Initializable {
 
         if (file != null) {
             try {
-                ImageIO.write(SwingFXUtils.fromFXImage(imagePreview.getImage(), null), "png", file);
+                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(imagePreview.getImage(), null);
+                ImageIO.write(bufferedImage, "png", file);
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
             }
@@ -222,7 +223,6 @@ public class TextPageController implements Initializable {
 
         // Set rotation - Translate to center, rotate, then translate back
         gc.translate(originalImage.getWidth() / 2, originalImage.getHeight() / 2);
-        gc.rotate(rotationValue);  // Use the rotation value from the slider
         gc.fillText(watermarkText, -textWidth, textHeight);
 
 
