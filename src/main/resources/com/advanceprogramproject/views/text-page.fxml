@@ -18,7 +18,7 @@
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="478.0" prefWidth="330.0">
             <children>
                 <ImageView fx:id="imagePreview" fitHeight="220.0" fitWidth="220.0" layoutX="76.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" y="64.0" />
-                <Label layoutX="76.0" layoutY="36.0" text="Image Resize">
+                <Label layoutX="76.0" layoutY="36.0" text="Watermark">
                     <font>
                         <Font size="14.0" />
                     </font>
@@ -67,9 +67,9 @@
                     </font>
                 </Label>
                 <ChoiceBox fx:id="fontDrop" layoutX="76.0" layoutY="151.0" prefWidth="400.0" />
-                <Slider fx:id="SizeSlider" layoutX="76.0" layoutY="372.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
+                <Slider fx:id="rotationSlider" layoutX="76.0" layoutY="372.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
                 <Label fx:id="SizeLabel" layoutX="260.0" layoutY="397.0" text="0%" />
-                <Label layoutX="80.0" layoutY="348.0" text="Size:">
+                <Label layoutX="80.0" layoutY="348.0" text="Rotation">
                     <font>
                         <Font size="14.0" />
                     </font>
@@ -85,7 +85,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Button fx:id="applyWatermarkButton" cache="true" layoutX="386.0" layoutY="74.0" mnemonicParsing="false" onAction="#applyWatermark" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Apply" textFill="WHITE">
+                <Button fx:id="applyWatermarkButton" cache="true" layoutX="386.0" layoutY="74.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Apply" textFill="WHITE">
                     <font>
                         <Font size="14.0" />
                     </font>

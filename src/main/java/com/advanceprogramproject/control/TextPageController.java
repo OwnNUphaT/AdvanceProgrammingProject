@@ -45,7 +45,7 @@ public class TextPageController implements Initializable {
     @FXML
     private Slider VisibilitySlider;
     @FXML
-    private Slider SizeSlider;
+    private Slider rotationSlider;
     @FXML
     private Button BackBtnText;
     @FXML
@@ -84,50 +84,6 @@ public class TextPageController implements Initializable {
             }
         }
     }
-
-
-    @FXML
-    public void applyWatermark() {
-        String watermarkText = textField.getText();
-        if (watermarkText.isEmpty()) {
-            return;
-        }
-
-        // Get the selected font from the ChoiceBox
-        String selectedFont = fontDrop.getValue();
-        if (selectedFont == null) {
-            // If no font is selected, use a default font
-            selectedFont = "Arial";
-        }
-
-        Image originalImage = imagePreview.getImage();
-        Canvas canvas = new Canvas(originalImage.getWidth(), originalImage.getHeight());
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        // Draw the original image
-        gc.drawImage(originalImage, 0, 0);
-
-        // Set up graphics context for watermarking
-        gc.setFont(new Font(selectedFont, 350)); // Use the selected font here
-        gc.setFill(Color.BLACK);
-        gc.setGlobalAlpha(0.5);
-
-        Text textNode = new Text(watermarkText);
-        textNode.setFont(new Font(selectedFont, 100)); // Use the selected font here
-        double textWidth = textNode.getLayoutBounds().getWidth();
-        double textHeight = textNode.getLayoutBounds().getHeight();
-
-        // Set rotation - Translate to center, rotate, then translate back
-        gc.translate(originalImage.getWidth() / 2, originalImage.getHeight() / 2);
-        gc.rotate(-30);  // 30 degrees, adjust as desired
-        gc.fillText(watermarkText, -textWidth, textHeight); // Adjust to center the text after rotation
-
-        WritableImage watermarkedImage = canvas.snapshot(null, null);
-        imagePreview.setImage(watermarkedImage);
-    }
-
-
-
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -138,9 +94,34 @@ public class TextPageController implements Initializable {
         List<String> fontFamilies = Font.getFamilies();
         fontDrop.getItems().addAll(fontFamilies);
 
+        // Textfield for watermark text
+        textField.textProperty().addListener((observable, oldValue, newValue) -> updateWatermark());
+
+        // Font choice box
+        fontDrop.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> updateWatermark());
+
         // Adding the alignment Choice Box
         String[] alignmentList = {"Top Left", "Center", "Top Right", "Bottom Left", "Bottom Right"};
         alignmentDrop.getItems().addAll(alignmentList);
+
+        // Rotation Slider
+        rotationSlider.setShowTickLabels(true);
+        rotationSlider.setShowTickMarks(true);
+
+        // Set the major tick unit (step)
+        rotationSlider.setMajorTickUnit(10);
+        rotationSlider.setMinorTickCount(0);
+
+        // Display the value in SizeLabel
+        rotationSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+                SizeLabel.setText("Size: " + newValue.intValue());
+                updateWatermark();
+            }
+        });
+
+
 
 
         //Visibility slider percentage.
@@ -152,16 +133,6 @@ public class TextPageController implements Initializable {
             }
         });
 
-
-
-        //Size slider percentage.
-        SizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                percent = (int) SizeSlider.getValue();
-                SizeLabel.setText(Integer.toString(percent) + "%");
-            }
-        });
 
         DataModel dataModel = DataModel.getInstance();
 
@@ -214,5 +185,48 @@ public class TextPageController implements Initializable {
             });
 
         }
+    }
+    // Method to update the watermark based on the current settings
+    private void updateWatermark() {
+        String watermarkText = textField.getText();
+        if (watermarkText.isEmpty()) {
+            return;
+        }
+
+        // Get the selected font from the ChoiceBox
+        String selectedFont = fontDrop.getValue();
+        if (selectedFont == null) {
+            // If no font is selected, use a default font
+            selectedFont = "Arial";
+        }
+
+        Image originalImage = imagePreview.getImage();
+        Canvas canvas = new Canvas(originalImage.getWidth(), originalImage.getHeight());
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        // Draw the original image
+        gc.drawImage(originalImage, 0, 0);
+
+        // Set up graphics context for watermarking
+        gc.setFont(new Font(selectedFont, 350)); // Use the selected font here
+        gc.setFill(Color.BLACK);
+        gc.setGlobalAlpha(0.5);
+
+        Text textNode = new Text(watermarkText);
+        textNode.setFont(new Font(selectedFont, 100)); // Use the selected font here
+        double textWidth = textNode.getLayoutBounds().getWidth();
+        double textHeight = textNode.getLayoutBounds().getHeight();
+
+        // Get rotation value from the slider
+        double rotationValue = rotationSlider.getValue();
+
+        // Set rotation - Translate to center, rotate, then translate back
+        gc.translate(originalImage.getWidth() / 2, originalImage.getHeight() / 2);
+        gc.rotate(rotationValue);  // Use the rotation value from the slider
+        gc.fillText(watermarkText, -textWidth, textHeight);
+
+
+        WritableImage watermarkedImage = canvas.snapshot(null, null);
+        imagePreview.setImage(watermarkedImage);
     }
 }
