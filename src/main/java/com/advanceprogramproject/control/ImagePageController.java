@@ -41,6 +41,7 @@ public class ImagePageController implements Initializable {
     @FXML
     private TextField heightField;
 
+    private int percent;
     private Stage stage;
 
     @Override
@@ -49,7 +50,7 @@ public class ImagePageController implements Initializable {
 
         // Add the listener to adjust image percentage
         percentage.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            int percent = newValue.intValue();
+            percent = newValue.intValue();
             dimensionLabel.setText(percent + "%");
             Image resizedImage = percentImage(imagePreview.getImage(), percent);
             // You can use the resizedImage as needed, but don't set it to imagePreview
@@ -120,6 +121,17 @@ public class ImagePageController implements Initializable {
         }
     }
 
+    private Image editedImage(Image image) {
+        Image resizedImage;
+        if (percent == 0) {
+            resizedImage = resizeImage(image, widthField.getText(), heightField.getText());
+        } else {
+            resizedImage = percentImage(image, percent);
+        }
+        return resizedImage;
+    }
+
+
     private void saveImage() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Image");
@@ -137,7 +149,7 @@ public class ImagePageController implements Initializable {
         if (file != null) {
             try {
                 // Get the resized image from the ImageView
-                Image resizedImage = resizeImage(imagePreview.getImage(), widthField.getText(), heightField.getText());
+                Image resizedImage = editedImage(imagePreview.getImage());
 
                 if (resizedImage != null) {
                     // Convert the JavaFX Image to a BufferedImage
@@ -145,17 +157,23 @@ public class ImagePageController implements Initializable {
 
                     // Save the image in the selected format
                     if (!ImageIO.write(originalImage, selectedFormat, file)) {
-                        showAlert("Error", "Failed to save image.");
+                        showAlert("Error", "Failed to save image. Unsupported format?");
+                    } else {
+                        showAlert("Success", "Image saved successfully!");
                     }
                 } else {
                     showAlert("Error", "No image selected to save.");
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
-                showAlert("Error", "An error occurred while saving the image.");
+                showAlert("Error", "An error occurred while saving the image: " + ex.getMessage());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlert("Error", "Unexpected error: " + ex.getMessage());
             }
         }
     }
+
 
 
     // Method to show a simple alert dialog
