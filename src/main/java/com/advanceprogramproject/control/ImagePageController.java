@@ -1,18 +1,11 @@
 package com.advanceprogramproject.control;
 
 import com.advanceprogramproject.model.DataModel;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -101,25 +94,35 @@ public class ImagePageController implements Initializable {
         }
     }
 
+
+// ...
+
     private Image resizeImage(Image image, String width, String height) {
         try {
-            int newWidth = 0;
-            int newHeight = 0;
+            int newWidth = !width.isEmpty() ? Integer.parseInt(width) : (int) image.getWidth();
+            int newHeight = !height.isEmpty() ? Integer.parseInt(height) : (int) image.getHeight();
 
-            if (!width.isEmpty()) {
-                newWidth = (int) ((image.getWidth() * 0.0) + Integer.parseInt(width));
+            // Create a writable image with the desired dimensions
+            WritableImage writableImage = new WritableImage(newWidth, newHeight);
+
+            // Get pixel readers and writers
+            PixelReader pixelReader = image.getPixelReader();
+            PixelWriter pixelWriter = writableImage.getPixelWriter();
+
+            // Copy pixels from the original image to the new image
+            for (int y = 0; y < newHeight; y++) {
+                for (int x = 0; x < newWidth; x++) {
+                    pixelWriter.setArgb(x, y, pixelReader.getArgb((int) (x * image.getWidth() / newWidth), (int) (y * image.getHeight() / newHeight)));
+                }
             }
 
-            if (!height.isEmpty()) {
-                newHeight = (int) ((image.getHeight() * 0.0) + Integer.parseInt(height));
-            }
-
-            return new Image(image.getUrl(), newWidth, newHeight, true,true);
-        }catch (Exception e) {
+            return writableImage;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
 
     private Image editedImage(Image image) {
         Image resizedImage;
