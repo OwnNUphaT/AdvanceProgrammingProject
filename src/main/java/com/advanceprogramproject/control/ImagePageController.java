@@ -28,17 +28,18 @@ public class ImagePageController implements Initializable {
     @FXML
     private Label dimensionLabel;
     @FXML
-    private Label qualityLabel;
-    @FXML
     private Slider percentage;
-    @FXML
-    private Slider qualitySlider;
+
     @FXML
     private Button downloadBtn;
     @FXML
     private ChoiceBox<String> imageFormat;
     @FXML
     private ImageView imagePreview;
+    @FXML
+    private TextField widthField;
+    @FXML
+    private TextField heightField;
 
     private Stage stage;
 
@@ -50,16 +51,12 @@ public class ImagePageController implements Initializable {
         percentage.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             int percent = newValue.intValue();
             dimensionLabel.setText(percent + "%");
-            Image resizedImage = resizeImage(imagePreview.getImage(), percent);
+            Image resizedImage = percentImage(imagePreview.getImage(), percent);
             // You can use the resizedImage as needed, but don't set it to imagePreview
         });
 
-        // Add listener to adjust image quality
-        qualitySlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            int percent = newValue.intValue();
-            qualityLabel.setText(percent + "%");
-            // Calculate smoothing value based on quality percentage (if needed)
-        });
+        // Setting the width and height of the image
+        resizeImage(imagePreview.getImage(), widthField.getText(), heightField.getText());
 
         // Initialize image format choice box
         imageFormat.getItems().addAll("JPG", "PNG");
@@ -91,7 +88,7 @@ public class ImagePageController implements Initializable {
         }
     }
 
-    private Image resizeImage(Image image, double percentage) {
+    private Image percentImage(Image image, double percentage) {
         try {
             double width = image.getWidth() * (1 + (percentage / 100.0));
             double height = image.getHeight() * (1 + (percentage / 100.0));
@@ -100,6 +97,26 @@ public class ImagePageController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();  // Handle the exception appropriately
             return null;  // Return null or a default image in case of an error
+        }
+    }
+
+    private Image resizeImage(Image image, String width, String height) {
+        try {
+            int newWidth = 0;
+            int newHeight = 0;
+
+            if (!width.isEmpty()) {
+                newWidth = (int) ((image.getWidth() * 0.0) + Integer.parseInt(width));
+            }
+
+            if (!height.isEmpty()) {
+                newHeight = (int) ((image.getHeight() * 0.0) + Integer.parseInt(height));
+            }
+
+            return new Image(image.getUrl(), newWidth, newHeight, true,true);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -120,7 +137,7 @@ public class ImagePageController implements Initializable {
         if (file != null) {
             try {
                 // Get the resized image from the ImageView
-                Image resizedImage = resizeImage(imagePreview.getImage(), percentage.getValue());
+                Image resizedImage = resizeImage(imagePreview.getImage(), widthField.getText(), heightField.getText());
 
                 if (resizedImage != null) {
                     // Convert the JavaFX Image to a BufferedImage
