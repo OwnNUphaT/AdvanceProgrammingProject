@@ -41,6 +41,7 @@ public class ImagePageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         setupImagePreview();
 
         // Add the listener to adjust image percentage
@@ -52,7 +53,9 @@ public class ImagePageController implements Initializable {
         });
 
         // Setting the width and height of the image
-        resizeImage(imagePreview.getImage(), widthField.getText(), heightField.getText());
+        if (imagePreview.getImage() != null) {
+            resizeImage(imagePreview.getImage(), widthField.getText(), heightField.getText());
+        }
 
         // Initialize image format choice box
         imageFormat.getItems().addAll("JPG", "PNG");

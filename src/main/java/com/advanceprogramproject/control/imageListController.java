@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseButton;
@@ -66,7 +67,27 @@ public class imageListController implements Initializable {
 
 
         //Next Page
-        startBtn.setOnAction(event -> toNextPage());
+        startBtn.setOnAction(event -> {
+            // Get the selected item
+            String selectedFileName = (String) imageLists.getSelectionModel().getSelectedItem();
+
+            // Check if the selected item is not null and exists in the fileMap
+            if (selectedFileName != null && fileMap.containsKey(selectedFileName)) {
+                String filePath = fileMap.get(selectedFileName);
+                File selected = new File(filePath);
+
+                // Set the selected file in the DataModel
+                dataModel.setSelectedFile(selected);
+
+                // Move to the next page
+                toNextPage();
+            } else {
+                // Handle the case where selectedFileName is null or not found in fileMap
+                showAlert("ERROR:", "Please Select the file");
+                System.err.println("Error: Selected file is null or not found.");
+            }
+        });
+
 
 
 
@@ -93,5 +114,14 @@ public class imageListController implements Initializable {
         }catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Method to show a simple alert dialog
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
