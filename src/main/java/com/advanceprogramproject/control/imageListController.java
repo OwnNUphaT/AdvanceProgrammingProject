@@ -82,7 +82,7 @@ public class imageListController implements Initializable {
             Parent root = loader.load();
 
             // Pass the current stage reference to the new controller
-            imagePageController controller = loader.getController();
+            ImagePageController controller = loader.getController();
             controller.setStage(stage);
 
 

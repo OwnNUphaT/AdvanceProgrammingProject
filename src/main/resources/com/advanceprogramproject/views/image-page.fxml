@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.40301724137931033" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advanceprogramproject.control.imagePageController">
+<SplitPane dividerPositions="0.40301724137931033" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.advanceprogramproject.control.ImagePageController">
    <items>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="478.0" prefWidth="330.0">
          <children>
@@ -36,8 +36,8 @@
          </children></AnchorPane>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
-            <Slider fx:id="dimensionSlider" layoutX="92.0" layoutY="70.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
-            <Label layoutX="105.0" layoutY="41.0" text="Image Dimension:">
+            <Slider fx:id="percentage" layoutX="92.0" layoutY="70.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
+            <Label layoutX="105.0" layoutY="41.0" text="Image Percentage:">
                <font>
                   <Font size="14.0" />
                </font>
