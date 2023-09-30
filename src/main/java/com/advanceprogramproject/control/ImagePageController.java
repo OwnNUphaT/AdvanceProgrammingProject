@@ -6,12 +6,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.*;
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -160,18 +164,26 @@ public class ImagePageController implements Initializable {
 
         if (file != null) {
             try {
-                // Get the resized image from the ImageView
                 Image resizedImage = editedImage(imagePreview.getImage());
 
                 if (resizedImage != null) {
-                    // Convert the JavaFX Image to a BufferedImage
                     BufferedImage originalImage = SwingFXUtils.fromFXImage(resizedImage, null);
+
+                    // Create a new BufferedImage with the correct color model for JPEG
+                    BufferedImage convertedImage = new BufferedImage(
+                            originalImage.getWidth(),
+                            originalImage.getHeight(),
+                            BufferedImage.TYPE_INT_RGB
+                    );
+                    convertedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
 
                     // Save the image in the selected format
                     if (!selectedFormat.equals("JPG")) {
-                        ImageIO.write(originalImage,"png",file);
+                        ImageIO.write(convertedImage, "png", file);
+                        showAlert("Success", "Image is Saved!");
                     } else {
-                        showAlert("Success", "Image saved successfully!");
+                        ImageIO.write(convertedImage, "jpg", file);
+                        showAlert("Success", "Image is Saved!");
                     }
                 } else {
                     showAlert("Error", "No image selected to save.");
