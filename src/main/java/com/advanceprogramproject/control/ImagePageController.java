@@ -4,8 +4,10 @@ import com.advanceprogramproject.model.DataModel;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -66,15 +68,10 @@ public class ImagePageController implements Initializable {
         // Check if the file path is not null before using it
         if (selectedFile != null && selectedFile.exists()) {
             try {
-                // Convert the file path to a URL with the file: protocol
-                URL fileUrl = selectedFile.toURI().toURL();
-
-                // Load the image using the URL
-                Image image = new Image(fileUrl.toString());
-
-                // Set the loaded image to the ImageView
+                // Load the image directly from the file path
+                Image image = new Image(selectedFile.toURI().toString());
                 imagePreview.setImage(image);
-            } catch (MalformedURLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
@@ -138,13 +135,22 @@ public class ImagePageController implements Initializable {
     private void saveImage() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Image");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
-                new FileChooser.ExtensionFilter("PNG", "*.png")
-        );
 
         // Selected format
         String selectedFormat = imageFormat.getValue();
+
+        FileChooser.ExtensionFilter extensionFilter = null;
+
+        if ("JPG".equals(selectedFormat)) {
+            extensionFilter = new FileChooser.ExtensionFilter("JPG", "*.jpg");
+        } else if ("PNG".equals(selectedFormat)) {
+            extensionFilter = new FileChooser.ExtensionFilter("PNG", "*.png");
+        }
+
+        if (extensionFilter != null) {
+            fileChooser.getExtensionFilters().setAll(extensionFilter);
+        }
+
 
         // Choose the directory for the file
         File file = fileChooser.showSaveDialog(stage);
@@ -159,8 +165,8 @@ public class ImagePageController implements Initializable {
                     BufferedImage originalImage = SwingFXUtils.fromFXImage(resizedImage, null);
 
                     // Save the image in the selected format
-                    if (!ImageIO.write(originalImage, selectedFormat, file)) {
-                        showAlert("Error", "Failed to save image. Unsupported format?");
+                    if (!selectedFormat.equals("JPG")) {
+                        ImageIO.write(originalImage,"png",file);
                     } else {
                         showAlert("Success", "Image saved successfully!");
                     }
