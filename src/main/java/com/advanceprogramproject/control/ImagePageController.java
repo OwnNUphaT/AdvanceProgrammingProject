@@ -3,7 +3,10 @@ package com.advanceprogramproject.control;
 import com.advanceprogramproject.model.DataModel;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -32,6 +35,8 @@ public class ImagePageController implements Initializable {
 
     @FXML
     private Button downloadBtn;
+    @FXML
+    private Button BackBtnImage;
     @FXML
     private ChoiceBox<String> imageFormat;
     @FXML
@@ -67,6 +72,26 @@ public class ImagePageController implements Initializable {
 
         // Download Button
         downloadBtn.setOnAction(event -> saveImage());
+
+        //Back to main-view page.
+        BackBtnImage.setOnAction(event -> {
+            try {
+                stage.close();
+
+                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
+                Parent root = loader.load();
+                // Pass the current stage reference to the new controller
+                ImportPageController importPageController = loader.getController();
+                importPageController.setStage(stage);
+
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
+
+        });
     }
 
     private void setupImagePreview() {
