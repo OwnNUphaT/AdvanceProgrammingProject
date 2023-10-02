@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ImagePageController implements Initializable {
@@ -78,6 +79,10 @@ public class ImagePageController implements Initializable {
                 // Load the image directly from the file path
                 Image image = new Image(selectedFile.toURI().toString());
                 imagePreview.setImage(image);
+
+                // Example: Using stream and lambda to print each word in the file path
+                Arrays.stream(selectedFile.getName().split("[\\s\\W]+"))
+                        .forEach(word -> System.out.println("Word: " + word));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -85,6 +90,7 @@ public class ImagePageController implements Initializable {
             System.out.println("File does not exist or is null.");
         }
     }
+
 
     private Image percentImage(Image image, double percentage) {
         try {
