@@ -24,10 +24,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -103,7 +100,7 @@ public class MainViewController implements Initializable {
                                     // Display all files in the importListView
                                     Path extractPath = Paths.get("path/to/extract/folder");
                                     List<String> extractedFiles = Files.walk(extractPath)
-                                            .filter(Files::isRegularFile)
+                                            .filter(path -> Files.isRegularFile(path) && !path.getFileName().toString().endsWith(".zip"))
                                             .map(Path::getFileName)
                                             .map(Path::toString)
                                             .collect(Collectors.toList());
@@ -160,39 +157,72 @@ public class MainViewController implements Initializable {
             event.consume();
         });
 
-        // Choose File Button
         chooseFileBtn.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Choose an Image File");
 
             // Set the file extension filters if needed (e.g., for images)
-            FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg","*.zip");
+            FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.zip");
             fileChooser.getExtensionFilters().add(imageFilter);
 
             // Show the file dialog and get the selected file
             File selectedFile = fileChooser.showOpenDialog(stage);
 
             if (selectedFile != null) {
-                File file = selectedFile;
-                String fileName = file.getName(); // Extract only the file name
+                String fileName = selectedFile.getName(); // Extract only the file name
                 importListView.getItems().add(fileName);
-                System.out.println("File path set: " + file.getAbsolutePath());
+                System.out.println("File path set: " + selectedFile.getAbsolutePath());
 
                 // Hidden the ImageImport
                 importLabel.setVisible(false);
                 importImage.setVisible(false);
-                
+
                 // Set the file path in the dataModel
                 DataModel dataModel = DataModel.getInstance();
-                dataModel.addDropFilePath(file);
+                dataModel.addDropFilePath(selectedFile);
                 dataModel.setFileName(fileName);
 
+                // Check if there is at least one ZIP file
+                boolean isZipFile = fileName.toLowerCase().endsWith(".zip");
+
+                // If there is a ZIP file, unzip it and display all files in the importListView
+                // If there is a ZIP file, unzip it and display all files in the importListView
+                if (isZipFile) {
+                    try {
+                        // Unzip the file
+                        unzip(selectedFile.getAbsolutePath(), "path/to/extract/folder");
+
+                        // Display all files in the importListView
+                        Path extractPath = Paths.get("path/to/extract/folder");
+                        List<String> extractedFiles = Files.walk(extractPath)
+                                .filter(path -> Files.isRegularFile(path) && !path.getFileName().toString().endsWith(".zip"))
+                                .map(Path::getFileName)
+                                .map(Path::toString)
+                                .collect(Collectors.toList());
+
+                        extractedFiles.forEach(fileName1 -> {
+                            System.out.println("File path set: " + extractPath.resolve(fileName1));
+                            importListView.getItems().add(fileName1);
+
+                            // Set the file path in the dataModel
+                            dataModel.addDropFilePath(extractPath.resolve(fileName1).toFile());
+                            // Remove the original ZIP file from the importListView
+                            importListView.getItems().remove(fileName);
+                            dataModel.setFileName(fileName1);
+
+                            // Add the file name to the inputListView and the absolute path to the list
+                            fileMap.put(fileName1, extractPath.resolve(fileName1).toString());
+                        });
 
 
-                // Add the file name to the inputListView and the absolute path to the list
-                fileMap.put(fileName, file.getAbsolutePath());
+
+                    } catch (IOException e) {
+                        e.printStackTrace(); // Handle the exception appropriately
+                    }
+                }
             }
         });
+
 
         // Goes to the imported-page.fxml when nextBtn is push.
         nextBtn.setOnAction(event -> {

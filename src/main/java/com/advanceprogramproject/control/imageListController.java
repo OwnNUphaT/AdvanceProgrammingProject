@@ -40,14 +40,19 @@ public class imageListController implements Initializable {
         List<File> droppedFiles = dataModel.getDropFilePaths();
 
         if (droppedFiles != null && !droppedFiles.isEmpty()) {
-            droppedFiles.forEach(file -> {
+            for (File file : droppedFiles) {
                 String fileName = file.getName();
                 imageLists.getItems().add(fileName);
                 fileMap.put(fileName, file.getAbsolutePath());
-            });
+            }
+
+            // Check if the first file is a ZIP file and remove it
+            if (droppedFiles.get(0).getName().endsWith(".zip")) {
+                String zipFileName = droppedFiles.get(0).getName();
+                imageLists.getItems().remove(zipFileName);
+                fileMap.remove(zipFileName);
+            }
         }
-
-
 
         imageLists.setOnMouseClicked((MouseEvent event) -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
