@@ -40,11 +40,11 @@ public class imageListController implements Initializable {
         List<File> droppedFiles = dataModel.getDropFilePaths();
 
         if (droppedFiles != null && !droppedFiles.isEmpty()) {
-            for (File file : droppedFiles) {
+            droppedFiles.forEach(file -> {
                 String fileName = file.getName();
-                imageLists.getItems().addAll(fileName);
+                imageLists.getItems().add(fileName);
                 fileMap.put(fileName, file.getAbsolutePath());
-            }
+            });
         }
 
 
