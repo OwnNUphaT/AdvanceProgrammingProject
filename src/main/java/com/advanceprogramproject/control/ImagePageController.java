@@ -38,6 +38,8 @@ public class ImagePageController implements Initializable {
     @FXML
     private Button BackBtnImage;
     @FXML
+    private Button saveBtn;
+    @FXML
     private ChoiceBox<String> imageFormat;
     @FXML
     private ImageView imagePreview;
