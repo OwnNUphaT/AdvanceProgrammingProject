@@ -108,7 +108,18 @@ public class MainViewController implements Initializable {
                                             .map(Path::toString)
                                             .collect(Collectors.toList());
 
-                                    importListView.getItems().addAll(extractedFiles);
+                                    extractedFiles.forEach(fileName1 -> {
+                                        System.out.println("File path set: " + extractPath.resolve(fileName1));
+                                        importListView.getItems().add(fileName1);
+
+                                        // Set the file path in the dataModel
+                                        dataModel.addDropFilePath(extractPath.resolve(fileName1).toFile());
+                                        dataModel.setFileName(fileName1);
+
+                                        // Add the file name to the inputListView and the absolute path to the list
+                                        fileMap.put(fileName1, extractPath.resolve(fileName1).toString());
+                                    });
+
                                 } catch (IOException e) {
                                     e.printStackTrace(); // Handle the exception appropriately
                                 }
