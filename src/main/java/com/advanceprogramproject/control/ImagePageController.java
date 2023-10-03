@@ -47,6 +47,8 @@ public class ImagePageController implements Initializable {
     private TextField widthField;
     @FXML
     private TextField heightField;
+    @FXML
+    private ImageView listIcon;
 
     private int percent;
     private Stage stage;
@@ -68,6 +70,22 @@ public class ImagePageController implements Initializable {
         if (imagePreview.getImage() != null) {
             resizeImage(imagePreview.getImage(), widthField.getText(), heightField.getText());
         }
+
+        //Setting the Icons
+        listIcon.setOnMouseClicked(event -> {
+            try {
+                stage.close();
+                FXMLLoader loader = new FXMLLoader(ImagePageController.class.getResource("/com/advanceprogramproject/views/edited-list.fxml"));
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
+
+                stage.setScene(scene);
+                stage.setTitle("Save List");
+                stage.show();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
         // Initialize image format choice box
         imageFormat.getItems().addAll("JPG", "PNG");
