@@ -79,6 +79,9 @@ public class ImagePageController implements Initializable {
                 Parent root = loader.load();
                 Scene scene = new Scene(root);
 
+                EditedListController controller = loader.getController();
+                controller.setStage(stage);
+
                 stage.setScene(scene);
                 stage.setTitle("Save List");
                 stage.show();

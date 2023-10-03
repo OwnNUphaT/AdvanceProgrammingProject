@@ -22,5 +22,10 @@
             <Font size="18.0" />
          </font>
       </Button>
+      <ImageView fx:id="backIcon" fitHeight="40.0" fitWidth="24.0" layoutX="40.0" layoutY="53.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../icons/angle-left.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
