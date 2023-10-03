@@ -145,7 +145,7 @@ public class TextPageController implements Initializable {
                 if (file.exists()) {
                     try {
 
-                         // Assuming there's only one image
+                        // Assuming there's only one image
                         Image image = new Image(new File(fileImage).toURI().toURL().toString());
 
                         // Set the loaded image to the ImageView

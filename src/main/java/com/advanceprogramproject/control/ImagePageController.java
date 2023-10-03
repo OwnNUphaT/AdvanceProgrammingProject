@@ -75,6 +75,12 @@ public class ImagePageController implements Initializable {
         // Download Button
         downloadBtn.setOnAction(event -> saveImage());
 
+        DataModel dataModel = DataModel.getInstance();
+        File selectedFile = dataModel.getSelected();
+
+        //Save Image
+        saveBtn.setOnAction(event -> savedImage(imagePreview.getImage(), selectedFile,imageFormat.getValue()));
+
         //Back to main-view page.
         BackBtnImage.setOnAction(event -> {
             try {
@@ -170,6 +176,44 @@ public class ImagePageController implements Initializable {
         }
         return resizedImage;
     }
+
+    private void savedImage(Image resizedImage, File file, String selectedFormat) {
+        if (resizedImage != null) {
+            try {
+                // Convert resizedImage to BufferedImage
+                BufferedImage originalImage = SwingFXUtils.fromFXImage(resizedImage, null);
+
+                // Create a new BufferedImage with the correct color model for JPEG
+                BufferedImage convertedImage = new BufferedImage(
+                        originalImage.getWidth(),
+                        originalImage.getHeight(),
+                        BufferedImage.TYPE_INT_RGB
+                );
+                convertedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
+
+                // Save the image in the selected format
+                if (!selectedFormat.equals("JPG")) {
+                    ImageIO.write(convertedImage, "png", file);
+                    showAlert("Success", "Image is Saved!");
+                } else {
+                    ImageIO.write(convertedImage, "jpg", file);
+                    showAlert("Success", "Image is Saved!");
+                }
+
+                // Save the file path in the EditedListController
+                EditedListController.addSavedFile(file.getAbsolutePath());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                showAlert("Error", "An error occurred while saving the image: " + ex.getMessage());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlert("Error", "Unexpected error: " + ex.getMessage());
+            }
+        } else {
+            showAlert("Error", "No image selected to save.");
+        }
+    }
+
 
 
     private void saveImage() {

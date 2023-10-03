@@ -227,16 +227,14 @@ public class MainViewController implements Initializable {
         // Goes to the imported-page.fxml when nextBtn is push.
         nextBtn.setOnAction(event -> {
             try {
-                stage.close();
+                stage.close(); //Close Previous Stage
 
                 FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
                 Parent root = loader.load();
 
                 // Pass the current stage reference to the new controller
                 ImportPageController importPageController = loader.getController();
-                importPageController.setStage(stage);
-
-
+                importPageController.setStage(stage); // new stage
 
                 scene = new Scene(root);
                 stage.setScene(scene);
