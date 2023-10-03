@@ -201,7 +201,7 @@ public class ImagePageController implements Initializable {
                 }
 
                 // Save the file path in the EditedListController
-                EditedListController.addSavedFile(file.getAbsolutePath());
+                EditedListController.addSavedFile(new File(file.getAbsolutePath()));
             } catch (IOException ex) {
                 ex.printStackTrace();
                 showAlert("Error", "An error occurred while saving the image: " + ex.getMessage());
