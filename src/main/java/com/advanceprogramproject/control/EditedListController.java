@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class EditedListController implements Initializable {
-    private HashMap<String, String> fileMap = new HashMap<>();
+    private static HashMap<String, String> fileMap = new HashMap<>();
     private static List<File> savedFiles = new ArrayList<>();
 
     public static void addSavedFile(File filePath) {
@@ -30,13 +30,18 @@ public class EditedListController implements Initializable {
     public static List<File> getSavedFiles() {
         return savedFiles;
     }
-    public Stage stage;
+
+    private Stage stage;
+
     @FXML
     private ListView downloadList;
+
     @FXML
     private Button downloadBtn;
+
     @FXML
     private ImageView backIcon;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         List<File> droppedFiles = getSavedFiles();
@@ -48,7 +53,6 @@ public class EditedListController implements Initializable {
                 fileMap.put(fileName, file.getAbsolutePath());
             }
 
-            // Check if the first file is a ZIP file and remove it
             if (droppedFiles.get(0).getName().endsWith(".zip")) {
                 String zipFileName = droppedFiles.get(0).getName();
                 downloadList.getItems().remove(zipFileName);
@@ -56,9 +60,8 @@ public class EditedListController implements Initializable {
             }
         }
 
-        //Back to ImagePage
         backIcon.setOnMouseClicked(event -> {
-            try{
+            try {
                 stage.close();
 
                 FXMLLoader loader = new FXMLLoader(EditedListController.class.getResource("/com/advanceprogramproject/views/image-page.fxml"));
@@ -70,16 +73,28 @@ public class EditedListController implements Initializable {
 
                 stage.setScene(scene);
                 stage.show();
-
-            }catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-
-
     }
+
+    public void updateListView() {
+        downloadList.getItems().clear();
+        fileMap.clear();
+
+        List<File> droppedFiles = getSavedFiles();
+
+        if (droppedFiles != null && !droppedFiles.isEmpty()) {
+            for (File file : droppedFiles) {
+                String fileName = file.getName();
+                downloadList.getItems().add(fileName);
+                fileMap.put(fileName, file.getAbsolutePath());
+            }
+        }
+    }
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-
 }

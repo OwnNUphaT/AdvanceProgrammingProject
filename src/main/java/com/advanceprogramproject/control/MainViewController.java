@@ -88,7 +88,7 @@ public class MainViewController implements Initializable {
                                 // Set the file path in the dataModel
                                 DataModel dataModel = DataModel.getInstance();
                                 dataModel.addDropFilePath(file);
-                                dataModel.setFileName(fileName);
+                                dataModel.setFileData(fileName, file.getAbsolutePath());
 
                                 // Add the file name to the inputListView and the absolute path to the list
                                 fileMap.put(fileName, file.getAbsolutePath());
@@ -111,7 +111,7 @@ public class MainViewController implements Initializable {
 
                                         // Set the file path in the dataModel
                                         dataModel.addDropFilePath(extractPath.resolve(fileName1).toFile());
-                                        dataModel.setFileName(fileName1);
+                                        dataModel.setFileData(fileName1, String.valueOf(extractPath.resolve(fileName1).toFile()));
 
                                         // Add the file name to the inputListView and the absolute path to the list
                                         fileMap.put(fileName1, extractPath.resolve(fileName1).toString());
@@ -139,7 +139,7 @@ public class MainViewController implements Initializable {
                                 // Set the file path in the dataModel
                                 DataModel dataModel = DataModel.getInstance();
                                 dataModel.addDropFilePath(file);
-                                dataModel.setFileName(fileName);
+                                dataModel.setFileData(fileName, file.getAbsolutePath());
 
                                 // Add the file name to the inputListView and the absolute path to the list
                                 fileMap.put(fileName, file.getAbsolutePath());
@@ -180,7 +180,7 @@ public class MainViewController implements Initializable {
                 // Set the file path in the dataModel
                 DataModel dataModel = DataModel.getInstance();
                 dataModel.addDropFilePath(selectedFile);
-                dataModel.setFileName(fileName);
+                dataModel.setFileData(fileName, selectedFile.getAbsolutePath());
 
                 // Check if there is at least one ZIP file
                 boolean isZipFile = fileName.toLowerCase().endsWith(".zip");
@@ -208,7 +208,7 @@ public class MainViewController implements Initializable {
                             dataModel.addDropFilePath(extractPath.resolve(fileName1).toFile());
                             // Remove the original ZIP file from the importListView
                             importListView.getItems().remove(fileName);
-                            dataModel.setFileName(fileName1);
+                            dataModel.setFileData(fileName1, extractPath.resolve(fileName1).toString());
 
                             // Add the file name to the inputListView and the absolute path to the list
                             fileMap.put(fileName1, extractPath.resolve(fileName1).toString());
