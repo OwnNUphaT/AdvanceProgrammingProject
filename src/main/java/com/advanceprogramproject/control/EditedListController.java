@@ -75,23 +75,22 @@ public class EditedListController implements Initializable {
     }
 
     public void setDataModel(DataModel dataModel) {
+        downloadList.getItems().clear();
         this.dataModel = dataModel;
 
-        // Get the edited image from DataModel and add it to the ListView
-        Image editedImage = dataModel.getEditedImage();
+        // Get the edited images from DataModel and add them to the ListView
+        List<Image> editedImages = dataModel.getEditedImage();
 
-        // Save the edited image to a file
-        if (editedImage != null) {
+        // Save the edited images to files
+        if (editedImages != null && !editedImages.isEmpty()) {
             try {
-                File editedImageFile = saveImageToFile(editedImage);
-                String fileName = editedImageFile.getName();
-
-                // Add the file to the ListView
-                downloadList.getItems().add(fileName);
-
-                // Add the file path to the map
-                fileMap.put(fileName, editedImageFile.getAbsolutePath());
-
+                for (Image image : editedImages) {
+                    File editedImageFile = saveImageToFile(image);
+                    // Add the file to the ListView
+                    downloadList.getItems().add(editedImageFile.getName());
+                    // Add the file path to the map
+                    fileMap.put(editedImageFile.getName(), editedImageFile.getAbsolutePath());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -102,7 +101,7 @@ public class EditedListController implements Initializable {
     // Method to save an Image to a File with the selected format
     private File saveImageToFile(Image image) throws IOException {
         String selectedFormat = dataModel.getSelectedFormat(); // Assuming selectedFormat is a String like "jpg" or "png"
-        File file = File.createTempFile("edited_image", "." + selectedFormat);
+        File file = File.createTempFile("edited_image_" + System.currentTimeMillis(), "." + selectedFormat);
 
         BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
         ImageIO.write(bufferedImage, selectedFormat, file);
@@ -111,7 +110,7 @@ public class EditedListController implements Initializable {
     }
 
     private void download() {
-        List<File> savedFile = downloadList.getItems();
+        List<String> savedFile = downloadList.getItems();
 
         if (savedFile.isEmpty()) {
             showAlert("No Files Selected", "Please select files to download.");
@@ -152,26 +151,33 @@ public class EditedListController implements Initializable {
 
         if (file != null) {
             try {
-                Image resizedImage = dataModel.getEditedImage();
+                List<Image> editedImages  = dataModel.getEditedImage();
 
-                if (resizedImage != null) {
-                    BufferedImage originalImage = SwingFXUtils.fromFXImage(resizedImage, null);
+                if (editedImages  != null  && !editedImages.isEmpty()) {
+                    // Iterate over each edited image and save it
+                    for (Image resizedImage : editedImages) {
+                        BufferedImage originalImage = SwingFXUtils.fromFXImage(resizedImage, null);
 
-                    // Create a new BufferedImage with the correct color model for JPEG
-                    BufferedImage convertedImage = new BufferedImage(
-                            originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB
-                    );
-                    convertedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
-                    // Save the image in the selected format
-                    if (!selectedFormat.equals("JPG")) {
-                        ImageIO.write(convertedImage, "png", file);
-                        showAlert("Success", "Image is Saved!");
-                    } else {
-                        ImageIO.write(convertedImage, "jpg", file);
-                        showAlert("Success", "Image is Saved!");
+                        // Create a new BufferedImage with the correct color model for JPEG
+                        BufferedImage convertedImage = new BufferedImage(
+                                originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB
+                        );
+                        convertedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
+
+                        // Generate a unique file name based on timestamp
+                        String fileName = "edited_image_" + System.currentTimeMillis() + "." + selectedFormat.toLowerCase();
+
+                        // Save the image in the selected format
+                        if ("JPG".equals(selectedFormat)) {
+                            ImageIO.write(convertedImage, "jpg", new File(file.getParentFile(), fileName));
+                        } else if ("PNG".equals(selectedFormat)) {
+                            ImageIO.write(convertedImage, "png", new File(file.getParentFile(), fileName));
+                        }
                     }
+
+                    showAlert("Success", "Images are Saved!");
                 } else {
-                    showAlert("Error", "No image selected to save.");
+                    showAlert("Error", "No images selected to save.");
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -183,7 +189,7 @@ public class EditedListController implements Initializable {
         }
     }
 
-    private void downloadFilesAsZip(List<File> files) {
+    private void downloadFilesAsZip(List<String> filePaths) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialFileName("downloaded_files.zip");
 
@@ -193,7 +199,14 @@ public class EditedListController implements Initializable {
             try (FileOutputStream fos = new FileOutputStream(zipFile);
                  ZipOutputStream zos = new ZipOutputStream(fos)) {
 
-                for (File file : files) {
+                for (String filePath : filePaths) {
+                    File file = new File(filePath);
+
+                    if (!file.exists()) {
+                        showAlert("Error", "File not found: " + filePath);
+                        return;  // Stop processing if a file is not found
+                    }
+
                     ZipEntry zipEntry = new ZipEntry(file.getName());
                     zos.putNextEntry(zipEntry);
 
@@ -215,6 +228,7 @@ public class EditedListController implements Initializable {
             }
         }
     }
+
 
 
     public void setStage(Stage stage) {

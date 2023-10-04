@@ -90,36 +90,14 @@ public class MainViewController implements Initializable {
                                 dataModel.addDropFilePath(file);
                                 dataModel.setFileData(fileName, file.getAbsolutePath());
 
-                                // Add the file name to the inputListView and the absolute path to the list
-                                fileMap.put(fileName, file.getAbsolutePath());
-
+                                // Add the file names to the inputListView
+                                List<String> extractedFiles = null;
                                 try {
-                                    // Unzip the file
-                                    unzip(file.getAbsolutePath(), "path/to/extract/folder");
-
-                                    // Display all files in the importListView
-                                    Path extractPath = Paths.get("path/to/extract/folder");
-                                    List<String> extractedFiles = Files.walk(extractPath)
-                                            .filter(path -> Files.isRegularFile(path) && !path.getFileName().toString().endsWith(".zip"))
-                                            .map(Path::getFileName)
-                                            .map(Path::toString)
-                                            .collect(Collectors.toList());
-
-                                    extractedFiles.forEach(fileName1 -> {
-                                        System.out.println("File path set: " + extractPath.resolve(fileName1));
-                                        importListView.getItems().add(fileName1);
-
-                                        // Set the file path in the dataModel
-                                        dataModel.addDropFilePath(extractPath.resolve(fileName1).toFile());
-                                        dataModel.setFileData(fileName1, String.valueOf(extractPath.resolve(fileName1).toFile()));
-
-                                        // Add the file name to the inputListView and the absolute path to the list
-                                        fileMap.put(fileName1, extractPath.resolve(fileName1).toString());
-                                    });
-
+                                    extractedFiles = unzip(file.getAbsolutePath());
                                 } catch (IOException e) {
-                                    e.printStackTrace(); // Handle the exception appropriately
+                                    throw new RuntimeException(e);
                                 }
+                                importListView.getItems().addAll(extractedFiles);
                             });
 
                     // Make the importImage and label disappear
@@ -185,37 +163,13 @@ public class MainViewController implements Initializable {
                 // Check if there is at least one ZIP file
                 boolean isZipFile = fileName.toLowerCase().endsWith(".zip");
 
-                // If there is a ZIP file, unzip it and display all files in the importListView
-                // If there is a ZIP file, unzip it and display all files in the importListView
                 if (isZipFile) {
                     try {
                         // Unzip the file
-                        unzip(selectedFile.getAbsolutePath(), "path/to/extract/folder");
+                        List<String> extractedFiles = unzip(selectedFile.getAbsolutePath());
+                        importListView.getItems().addAll(extractedFiles);
 
-                        // Display all files in the importListView
-                        Path extractPath = Paths.get("path/to/extract/folder");
-                        List<String> extractedFiles = Files.walk(extractPath)
-                                .filter(path -> Files.isRegularFile(path) && !path.getFileName().toString().endsWith(".zip"))
-                                .map(Path::getFileName)
-                                .map(Path::toString)
-                                .collect(Collectors.toList());
-
-                        extractedFiles.forEach(fileName1 -> {
-                            System.out.println("File path set: " + extractPath.resolve(fileName1));
-                            importListView.getItems().add(fileName1);
-
-                            // Set the file path in the dataModel
-                            dataModel.addDropFilePath(extractPath.resolve(fileName1).toFile());
-                            // Remove the original ZIP file from the importListView
-                            importListView.getItems().remove(fileName);
-                            dataModel.setFileData(fileName1, extractPath.resolve(fileName1).toString());
-
-                            // Add the file name to the inputListView and the absolute path to the list
-                            fileMap.put(fileName1, extractPath.resolve(fileName1).toString());
-                        });
-
-
-
+                        // ... (remaining code)
                     } catch (IOException e) {
                         e.printStackTrace(); // Handle the exception appropriately
                     }
@@ -244,37 +198,27 @@ public class MainViewController implements Initializable {
             }
         });
     }
-    public static void unzip(String zipFilePath, String extractFolderPath) throws IOException {
+    public static List<String> unzip(String zipFilePath) throws IOException {
+        List<String> extractedFiles = new ArrayList<>();
         byte[] buffer = new byte[1024];
 
         try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFilePath))) {
             ZipEntry entry = zipInputStream.getNextEntry();
 
             while (entry != null) {
-                String entryPath = extractFolderPath + File.separator + entry.getName();
-                File entryFile = new File(entryPath);
+                // Assuming you want to display the file name without the directory structure
+                String fileName = new File(entry.getName()).getName();
+                extractedFiles.add(fileName);
 
-                // Ensure that the parent directories exist
-                File parent = entryFile.getParentFile();
-                if (!parent.exists()) {
-                    parent.mkdirs();
-                }
-
-
-                if (entry.isDirectory()) {
-                    entryFile.mkdirs();
-                } else {
-                    try (FileOutputStream fos = new FileOutputStream(entryFile)) {
-                        int length;
-                        while ((length = zipInputStream.read(buffer)) > 0) {
-                            fos.write(buffer, 0, length);
-                        }
-                    }
-                }
+                // You can add the file name directly to your importListView here
+                // importListView.getItems().add(fileName);
 
                 zipInputStream.closeEntry();
                 entry = zipInputStream.getNextEntry();
             }
         }
+
+        return extractedFiles;
     }
+
 }

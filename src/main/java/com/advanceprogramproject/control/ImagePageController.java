@@ -71,7 +71,6 @@ public class ImagePageController implements Initializable {
         listIcon.setOnMouseClicked(event -> {
             try {
                 stage.close();
-                saveEditedImage();
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/advanceprogramproject/views/edited-list.fxml"));
                 Parent root = loader.load();
@@ -82,7 +81,6 @@ public class ImagePageController implements Initializable {
                 controller.setDataModel(dataModel);
 
                 stage.setScene(scene);
-                stage.setTitle("Save List");
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -103,11 +101,11 @@ public class ImagePageController implements Initializable {
             try {
                 stage.close();
 
-                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
+                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/image-list.fxml"));
                 Parent root = loader.load();
 
-                ImportPageController importPageController = loader.getController();
-                importPageController.setStage(stage);
+                imageListController controller = loader.getController();
+                controller.setStage(stage);
 
                 Scene scene = new Scene(root);
                 stage.setScene(scene);

@@ -12,14 +12,14 @@ public class DataModel {
     private static DataModel instance;
     private List<File> dropFilePaths = new ArrayList<>();
     private File selected;
-    private Image editedImage;
+    private List<Image> editedImage = new ArrayList<>();
 
-    public Image getEditedImage() {
+    public List<Image> getEditedImage() {
         return editedImage;
     }
 
     public void setEditedImage(Image editedImage) {
-        this.editedImage = editedImage;
+        this.editedImage.add(editedImage);
     }
 
 
