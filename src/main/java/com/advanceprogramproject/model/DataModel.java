@@ -35,6 +35,7 @@ public class DataModel {
     private String selectedFormat;
     private Map<String, String> fileData = new HashMap<>();
 
+
     public DataModel() {
         // Private constructor to prevent external instantiation
     }
@@ -73,5 +74,8 @@ public class DataModel {
 
     public Map<String, String> getFileData() {
         return fileData;
+    }
+
+    public void setFileName(String fileName) {
     }
 }

@@ -71,12 +71,15 @@ public class ImagePageController implements Initializable {
         listIcon.setOnMouseClicked(event -> {
             try {
                 stage.close();
+                saveEditedImage();
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/advanceprogramproject/views/edited-list.fxml"));
                 Parent root = loader.load();
                 Scene scene = new Scene(root);
 
                 EditedListController controller = loader.getController();
                 controller.setStage(stage);
+                controller.setDataModel(dataModel);
 
                 stage.setScene(scene);
                 stage.setTitle("Save List");
@@ -85,6 +88,8 @@ public class ImagePageController implements Initializable {
                 e.printStackTrace();
             }
         });
+
+        saveBtn.setOnAction(event -> saveEditedImage());
 
 
         imageFormat.getItems().addAll("JPG", "PNG");
@@ -113,9 +118,10 @@ public class ImagePageController implements Initializable {
         });
     }
 
-    private void setupImagePreview() {
+    private void setupImagePreview() { // Setting up the listView
         DataModel dataModel = DataModel.getInstance();
         File selectedFile = dataModel.getSelected();
+        String fileName = selectedFile.getName();
 
         if (selectedFile != null && selectedFile.exists()) {
             try {
@@ -164,21 +170,25 @@ public class ImagePageController implements Initializable {
         }
     }
 
-    private Image editedImage(Image image) {
+    private Image editedImage(Image image) { // Create editedImage
         Image resizedImage;
         if (percent == 0) {
             resizedImage = resizeImage(image, widthField.getText(), heightField.getText());
         } else {
             resizedImage = percentImage(image, percent);
         }
+        dataModel.setSelectedFormat(imageFormat.getValue());
         dataModel.setEditedImage(resizedImage);
         return resizedImage;
     }
 
     //TODO: Make the Save Method
+    private void saveEditedImage() {
+        Image editedImage = editedImage(imagePreview.getImage());
+        dataModel.setEditedImage(editedImage);
+    }
 
-
-    private void downloadImage() {
+    private void downloadImage() { // Download the image.
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Image");
 

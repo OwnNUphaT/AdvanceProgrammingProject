@@ -10,12 +10,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -34,17 +36,9 @@ import java.util.zip.ZipOutputStream;
 
 public class EditedListController implements Initializable {
     private static HashMap<String, String> fileMap = new HashMap<>();
-    private static List<File> savedFiles = new ArrayList<>();
-
-    public static void addSavedFile(File filePath) {
-        savedFiles.add(filePath);
-    }
-
-    public static List<File> getSavedFiles() {
-        return savedFiles;
-    }
 
     private Stage stage;
+    private DataModel dataModel;
 
     @FXML
     private ListView downloadList;
@@ -77,86 +71,68 @@ public class EditedListController implements Initializable {
             }
         });
 
-        downloadBtn.setOnAction(event -> downloadSelectedFiles());
+        downloadBtn.setOnAction(event -> download());
+    }
+
+    public void setDataModel(DataModel dataModel) {
+        this.dataModel = dataModel;
+
+        // Get the edited image from DataModel and add it to the ListView
+        Image editedImage = dataModel.getEditedImage();
+
+        // Save the edited image to a file
+        if (editedImage != null) {
+            try {
+                File editedImageFile = saveImageToFile(editedImage);
+                String fileName = editedImageFile.getName();
+
+                // Add the file to the ListView
+                downloadList.getItems().add(fileName);
+
+                // Add the file path to the map
+                fileMap.put(fileName, editedImageFile.getAbsolutePath());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
+    // Method to save an Image to a File with the selected format
+    private File saveImageToFile(Image image) throws IOException {
+        String selectedFormat = dataModel.getSelectedFormat(); // Assuming selectedFormat is a String like "jpg" or "png"
+        File file = File.createTempFile("edited_image", "." + selectedFormat);
 
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+        ImageIO.write(bufferedImage, selectedFormat, file);
 
-    private void downloadSelectedFiles() {
-        List<File> allFiles = new ArrayList<>();
+        return file;
+    }
 
-        for (String filePath : fileMap.values()) {
-            allFiles.add(new File(filePath));
-        }
+    private void download() {
+        List<File> savedFile = downloadList.getItems();
 
-        if (allFiles.isEmpty()) {
-            showAlert("Error", "No files available for download.");
+        if (savedFile.isEmpty()) {
+            showAlert("No Files Selected", "Please select files to download.");
             return;
         }
 
-        if (allFiles.size() > 1) {
-            // Download as a zip file
-            downloadAsZip(allFiles);
+        if (savedFile.size() > 1) {
+            downloadFilesAsZip(savedFile);
         } else {
-            // Download single file
-            downloadFile(allFiles.get(0));
+            downloadFiles();
         }
     }
 
 
-
-    private void downloadAsZip(List<File> files) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select Directory to Save ZIP File");
-
-        File selectedDirectory = directoryChooser.showDialog(stage);
-
-        if (selectedDirectory != null) {
-            String zipFilePath = selectedDirectory.getAbsolutePath() + File.separator + "downloaded_files.zip";
-
-            Task<Void> task = new Task<Void>() {
-                @Override
-                protected Void call() {
-                    try (FileOutputStream fos = new FileOutputStream(zipFilePath);
-                         ZipOutputStream zipOut = new ZipOutputStream(fos)) {
-
-                        for (File file : files) {
-                            try (FileInputStream fis = new FileInputStream(file)) {
-                                ZipEntry zipEntry = new ZipEntry(file.getName());
-                                zipOut.putNextEntry(zipEntry);
-
-                                byte[] bytes = new byte[1024];
-                                int length;
-                                while ((length = fis.read(bytes)) >= 0) {
-                                    zipOut.write(bytes, 0, length);
-                                }
-
-                                zipOut.closeEntry();
-                            }
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            };
-
-            task.setOnSucceeded(workerStateEvent -> showAlert("Success", "ZIP file downloaded successfully."));
-
-            Thread thread = new Thread(task);
-            thread.setDaemon(true);
-            thread.start();
-        }
-    }
-
-    private void downloadFile(File file) {
+    private void downloadFiles() { // Download the image.
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save File");
-        DataModel dataModel = new DataModel();
+        fileChooser.setTitle("Save Image");
 
+        // Selected format
         String selectedFormat = dataModel.getSelectedFormat();
+
 
         FileChooser.ExtensionFilter extensionFilter = null;
 
@@ -172,7 +148,7 @@ public class EditedListController implements Initializable {
 
 
         // Choose the directory for the file
-        file = fileChooser.showSaveDialog(stage);
+        File file = fileChooser.showSaveDialog(stage);
 
         if (file != null) {
             try {
@@ -183,12 +159,9 @@ public class EditedListController implements Initializable {
 
                     // Create a new BufferedImage with the correct color model for JPEG
                     BufferedImage convertedImage = new BufferedImage(
-                            originalImage.getWidth(),
-                            originalImage.getHeight(),
-                            BufferedImage.TYPE_INT_RGB
+                            originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB
                     );
                     convertedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
-
                     // Save the image in the selected format
                     if (!selectedFormat.equals("JPG")) {
                         ImageIO.write(convertedImage, "png", file);
@@ -209,6 +182,41 @@ public class EditedListController implements Initializable {
             }
         }
     }
+
+    private void downloadFilesAsZip(List<File> files) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialFileName("downloaded_files.zip");
+
+        File zipFile = fileChooser.showSaveDialog(stage);
+
+        if (zipFile != null) {
+            try (FileOutputStream fos = new FileOutputStream(zipFile);
+                 ZipOutputStream zos = new ZipOutputStream(fos)) {
+
+                for (File file : files) {
+                    ZipEntry zipEntry = new ZipEntry(file.getName());
+                    zos.putNextEntry(zipEntry);
+
+                    try (FileInputStream fis = new FileInputStream(file)) {
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = fis.read(buffer)) > 0) {
+                            zos.write(buffer, 0, length);
+                        }
+                    }
+
+                    zos.closeEntry();
+                }
+
+                showAlert("Download Successful", "Files downloaded as a zip successfully.");
+
+            } catch (IOException e) {
+                showAlert("Error", "Error downloading files as zip: " + e.getMessage());
+            }
+        }
+    }
+
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
