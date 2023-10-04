@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -51,10 +52,11 @@ public class ImagePageController implements Initializable {
     private ImageView listIcon;
     private int percent;
     private Stage stage;
-
+    DataModel dataModel = new DataModel();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupImagePreview();
+
 
         percentage.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             percent = newValue.intValue();
@@ -84,14 +86,13 @@ public class ImagePageController implements Initializable {
             }
         });
 
+
         imageFormat.getItems().addAll("JPG", "PNG");
+        dataModel.setSelectedFormat(imageFormat.getValue());
 
-        downloadBtn.setOnAction(event -> saveImage());
+        downloadBtn.setOnAction(event -> downloadImage());
 
-        DataModel dataModel = DataModel.getInstance();
-        File selectedFile = dataModel.getSelected();
-
-        saveBtn.setOnAction(event -> savedImage(imagePreview.getImage(), selectedFile, imageFormat.getValue()));
+        //TODO: Make the save method for the saveBtn
 
         BackBtnImage.setOnAction(event -> {
             try {
@@ -170,49 +171,20 @@ public class ImagePageController implements Initializable {
         } else {
             resizedImage = percentImage(image, percent);
         }
+        dataModel.setEditedImage(resizedImage);
         return resizedImage;
     }
 
-    private void savedImage(Image resizedImage, File file, String selectedFormat) {
-        if (resizedImage != null) {
-            try {
-                BufferedImage originalImage = SwingFXUtils.fromFXImage(resizedImage, null);
-                BufferedImage convertedImage = new BufferedImage(
-                        originalImage.getWidth(),
-                        originalImage.getHeight(),
-                        BufferedImage.TYPE_INT_RGB
-                );
-                convertedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
-
-                if (!selectedFormat.equals("JPG")) {
-                    ImageIO.write(convertedImage, "png", file);
-                    showAlert("Success", "Image is Saved!");
-                } else {
-                    ImageIO.write(convertedImage, "jpg", file);
-                    showAlert("Success", "Image is Saved!");
-                }
-
-                EditedListController.addSavedFile(new File(file.getAbsolutePath()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                showAlert("Error", "An error occurred while saving the image: " + ex.getMessage());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                showAlert("Error", "Unexpected error: " + ex.getMessage());
-            }
-        } else {
-            showAlert("Error", "No image selected to save.");
-        }
-    }
+    //TODO: Make the Save Method
 
 
-
-    private void saveImage() {
+    private void downloadImage() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Image");
 
         // Selected format
         String selectedFormat = imageFormat.getValue();
+
 
         FileChooser.ExtensionFilter extensionFilter = null;
 
@@ -239,12 +211,9 @@ public class ImagePageController implements Initializable {
 
                     // Create a new BufferedImage with the correct color model for JPEG
                     BufferedImage convertedImage = new BufferedImage(
-                            originalImage.getWidth(),
-                            originalImage.getHeight(),
-                            BufferedImage.TYPE_INT_RGB
+                            originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB
                     );
                     convertedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
-
                     // Save the image in the selected format
                     if (!selectedFormat.equals("JPG")) {
                         ImageIO.write(convertedImage, "png", file);

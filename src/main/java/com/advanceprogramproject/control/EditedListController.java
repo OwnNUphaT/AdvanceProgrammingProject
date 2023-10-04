@@ -2,6 +2,7 @@ package com.advanceprogramproject.control;
 
 import com.advanceprogramproject.model.DataModel;
 import javafx.concurrent.Task;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -10,11 +11,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -52,21 +57,7 @@ public class EditedListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        List<File> droppedFiles = getSavedFiles();
-
-        if (droppedFiles != null && !droppedFiles.isEmpty()) {
-            for (File file : droppedFiles) {
-                String fileName = file.getName();
-                downloadList.getItems().add(fileName);
-                fileMap.put(fileName, file.getAbsolutePath());
-            }
-
-            if (droppedFiles.get(0).getName().endsWith(".zip")) {
-                String zipFileName = droppedFiles.get(0).getName();
-                downloadList.getItems().remove(zipFileName);
-                fileMap.remove(zipFileName);
-            }
-        }
+        // TODO: Load up the list for saved file with the selected format
 
         backIcon.setOnMouseClicked(event -> {
             try {
@@ -89,24 +80,8 @@ public class EditedListController implements Initializable {
         downloadBtn.setOnAction(event -> downloadSelectedFiles());
     }
 
-    public void updateListView() {
-        downloadList.getItems().clear();
-        fileMap.clear();
 
-        List<File> droppedFiles = getSavedFiles();
 
-        if (droppedFiles != null && !droppedFiles.isEmpty()) {
-            for (File file : droppedFiles) {
-                String fileName = file.getName();
-                downloadList.getItems().add(fileName);
-                fileMap.put(fileName, file.getAbsolutePath());
-            }
-        }
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
 
     private void downloadSelectedFiles() {
         List<File> allFiles = new ArrayList<>();
@@ -179,29 +154,63 @@ public class EditedListController implements Initializable {
     private void downloadFile(File file) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save File");
+        DataModel dataModel = new DataModel();
 
-        File selectedFile = fileChooser.showSaveDialog(stage);
+        String selectedFormat = dataModel.getSelectedFormat();
 
-        if (selectedFile != null) {
+        FileChooser.ExtensionFilter extensionFilter = null;
+
+        if ("JPG".equals(selectedFormat)) {
+            extensionFilter = new FileChooser.ExtensionFilter("JPG", "*.jpg");
+        } else if ("PNG".equals(selectedFormat)) {
+            extensionFilter = new FileChooser.ExtensionFilter("PNG", "*.png");
+        }
+
+        if (extensionFilter != null) {
+            fileChooser.getExtensionFilters().setAll(extensionFilter);
+        }
+
+
+        // Choose the directory for the file
+        file = fileChooser.showSaveDialog(stage);
+
+        if (file != null) {
             try {
-                DataModel dataModel = DataModel.getInstance();
-                dataModel.setSelectedFile(file);
+                Image resizedImage = dataModel.getEditedImage();
 
-                stage.close();
+                if (resizedImage != null) {
+                    BufferedImage originalImage = SwingFXUtils.fromFXImage(resizedImage, null);
 
-                FXMLLoader loader = new FXMLLoader(EditedListController.class.getResource("/com/advanceprogramproject/views/image-page.fxml"));
-                Parent root = loader.load();
-                Scene scene = new Scene(root);
+                    // Create a new BufferedImage with the correct color model for JPEG
+                    BufferedImage convertedImage = new BufferedImage(
+                            originalImage.getWidth(),
+                            originalImage.getHeight(),
+                            BufferedImage.TYPE_INT_RGB
+                    );
+                    convertedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
 
-                ImagePageController controller = loader.getController();
-                controller.setStage(stage);
-
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
+                    // Save the image in the selected format
+                    if (!selectedFormat.equals("JPG")) {
+                        ImageIO.write(convertedImage, "png", file);
+                        showAlert("Success", "Image is Saved!");
+                    } else {
+                        ImageIO.write(convertedImage, "jpg", file);
+                        showAlert("Success", "Image is Saved!");
+                    }
+                } else {
+                    showAlert("Error", "No image selected to save.");
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                showAlert("Error", "An error occurred while saving the image: " + ex.getMessage());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlert("Error", "Unexpected error: " + ex.getMessage());
             }
         }
+    }
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     private void showAlert(String title, String message) {

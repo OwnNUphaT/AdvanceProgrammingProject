@@ -1,5 +1,7 @@
 package com.advanceprogramproject.model;
 
+import javafx.scene.image.Image;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +12,27 @@ public class DataModel {
     private static DataModel instance;
     private List<File> dropFilePaths = new ArrayList<>();
     private File selected;
+    private Image editedImage;
+
+    public Image getEditedImage() {
+        return editedImage;
+    }
+
+    public void setEditedImage(Image editedImage) {
+        this.editedImage = editedImage;
+    }
+
+
+
+    public String getSelectedFormat() {
+        return selectedFormat;
+    }
+
+    public void setSelectedFormat(String selectedFormat) {
+        this.selectedFormat = selectedFormat;
+    }
+
+    private String selectedFormat;
     private Map<String, String> fileData = new HashMap<>();
 
     public DataModel() {
