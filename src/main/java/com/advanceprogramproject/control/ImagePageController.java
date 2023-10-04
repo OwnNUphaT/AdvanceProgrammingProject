@@ -119,7 +119,6 @@ public class ImagePageController implements Initializable {
     private void setupImagePreview() { // Setting up the listView
         DataModel dataModel = DataModel.getInstance();
         File selectedFile = dataModel.getSelected();
-        String fileName = selectedFile.getName();
 
         if (selectedFile != null && selectedFile.exists()) {
             try {

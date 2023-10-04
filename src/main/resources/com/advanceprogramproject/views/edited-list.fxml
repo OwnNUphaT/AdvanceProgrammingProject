@@ -27,5 +27,6 @@
             <Image url="@../icons/angle-left.png" />
          </image>
       </ImageView>
+      <Button fx:id="clearBtn" layoutX="710.0" layoutY="77.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="80.0" style="-fx-background-color: E51B23;" text="Clear All" textFill="WHITE" />
    </children>
 </AnchorPane>

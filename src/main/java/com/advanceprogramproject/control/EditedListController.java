@@ -48,6 +48,8 @@ public class EditedListController implements Initializable {
 
     @FXML
     private ImageView backIcon;
+    @FXML
+    private Button clearBtn;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -69,6 +71,10 @@ public class EditedListController implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        });
+
+        clearBtn.setOnAction(event -> {
+            downloadList.getItems().clear();
         });
 
         downloadBtn.setOnAction(event -> download());
