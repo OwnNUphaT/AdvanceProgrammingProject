@@ -57,7 +57,7 @@ public class imageListController implements Initializable {
         imageLists.setOnMouseClicked((MouseEvent event) -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 // Get the selected item
-                String selectedFileName = (String) imageLists.getSelectionModel().getSelectedItem();
+                String selectedFileName = imageLists.getSelectionModel().getSelectedItem().toString();
                 String filePath = fileMap.get(selectedFileName);
                 File selected = new File(filePath);
 
@@ -74,7 +74,7 @@ public class imageListController implements Initializable {
         //Next Page
         startBtn.setOnAction(event -> {
             // Get the selected item
-            String selectedFileName = (String) imageLists.getSelectionModel().getSelectedItem();
+            String selectedFileName = imageLists.getSelectionModel().getSelectedItem().toString();
 
             // Check if the selected item is not null and exists in the fileMap
             if (selectedFileName != null && fileMap.containsKey(selectedFileName)) {
@@ -104,7 +104,7 @@ public class imageListController implements Initializable {
             stage.close();
 
             //Loading new fxml file
-            FXMLLoader loader = new FXMLLoader(ImportPageController.class.getResource("/com/advanceprogramproject/views/image-page.fxml"));
+            FXMLLoader loader = new FXMLLoader(imageListController.class.getResource("/com/advanceprogramproject/views/image-page.fxml"));
             Parent root = loader.load();
 
             // Pass the current stage reference to the new controller

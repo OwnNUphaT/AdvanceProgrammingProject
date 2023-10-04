@@ -101,7 +101,7 @@ public class ImagePageController implements Initializable {
             try {
                 stage.close();
 
-                FXMLLoader loader = new FXMLLoader(MainViewController.class.getResource("/com/advanceprogramproject/views/image-list.fxml"));
+                FXMLLoader loader = new FXMLLoader(imageListController.class.getResource("/com/advanceprogramproject/views/image-list.fxml"));
                 Parent root = loader.load();
 
                 imageListController controller = loader.getController();
