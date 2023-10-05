@@ -8,7 +8,6 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -17,7 +16,7 @@
    <items>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="478.0" prefWidth="330.0">
          <children>
-            <Label layoutX="58.0" layoutY="55.0" text="Image Resize">
+            <Label layoutX="61.0" layoutY="55.0" text="Image Resize">
                <font>
                   <Font size="14.0" />
                </font>
@@ -33,12 +32,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <ImageView fx:id="imagePreview" fitHeight="193.0" fitWidth="258.0" layoutX="58.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="listIcon" fitHeight="24.0" fitWidth="27.0" layoutX="58.0" layoutY="281.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../icons/menu-burger.png" />
-               </image>
-            </ImageView>
+            <ImageView fx:id="imagePreview" fitHeight="185.0" fitWidth="250.0" layoutX="61.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true" />
             
          </children></AnchorPane>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -69,17 +63,6 @@
             </Label>
             <ChoiceBox fx:id="imageFormat" layoutX="87.0" layoutY="277.0" prefWidth="150.0" />
             <Button fx:id="BackBtnImage" cache="true" layoutX="403.0" layoutY="421.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Back" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button fx:id="saveBtn" cache="true" layoutX="318.0" layoutY="273.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23; -fx-background-radius: 25;" text="Save" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>

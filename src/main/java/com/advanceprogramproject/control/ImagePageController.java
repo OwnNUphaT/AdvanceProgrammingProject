@@ -22,11 +22,16 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class ImagePageController implements Initializable {
     @FXML
@@ -48,10 +53,10 @@ public class ImagePageController implements Initializable {
     private TextField widthField;
     @FXML
     private TextField heightField;
-    @FXML
-    private ImageView listIcon;
     private int percent;
     private Stage stage;
+    private ExecutorService executorService;
+    private List<Future<Image>> imageFutures;
     DataModel dataModel = new DataModel();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -68,26 +73,6 @@ public class ImagePageController implements Initializable {
             resizeImage(imagePreview.getImage(), widthField.getText(), heightField.getText());
         }
 
-        listIcon.setOnMouseClicked(event -> {
-            try {
-                stage.close();
-
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/advanceprogramproject/views/edited-list.fxml"));
-                Parent root = loader.load();
-                Scene scene = new Scene(root);
-
-                EditedListController controller = loader.getController();
-                controller.setStage(stage);
-                controller.setDataModel(dataModel);
-
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        saveBtn.setOnAction(event -> saveEditedImage());
 
 
         imageFormat.getItems().addAll("JPG", "PNG");
@@ -95,16 +80,21 @@ public class ImagePageController implements Initializable {
 
         downloadBtn.setOnAction(event -> downloadImage());
 
-        //TODO: Make the save method for the saveBtn
+        // Initialize ExecutorService
+        int numberOfThreads = Runtime.getRuntime().availableProcessors();
+        executorService = Executors.newFixedThreadPool(numberOfThreads);
+
+        // Initialize list for holding Future<Image>
+        imageFutures = new CopyOnWriteArrayList<>();
 
         BackBtnImage.setOnAction(event -> {
             try {
                 stage.close();
 
-                FXMLLoader loader = new FXMLLoader(imageListController.class.getResource("/com/advanceprogramproject/views/image-list.fxml"));
+                FXMLLoader loader = new FXMLLoader(ImagePageController.class.getResource("/com/advanceprogramproject/views/imported-page.fxml"));
                 Parent root = loader.load();
 
-                imageListController controller = loader.getController();
+                ImportPageController controller = loader.getController();
                 controller.setStage(stage);
 
                 Scene scene = new Scene(root);
@@ -118,20 +108,43 @@ public class ImagePageController implements Initializable {
 
     private void setupImagePreview() { // Setting up the listView
         DataModel dataModel = DataModel.getInstance();
-        File selectedFile = dataModel.getSelected();
+        List<File> selectedFiles = dataModel.getDropFilePaths();
 
-        if (selectedFile != null && selectedFile.exists()) {
-            try {
-                Image image = new Image(selectedFile.toURI().toString());
-                imagePreview.setImage(image);
+        if (selectedFiles != null && !selectedFiles.isEmpty()) {
+            for (File selectedFile : selectedFiles) {
+                try {
+                    Image image = new Image(selectedFile.toURI().toString());
+                    imagePreview.setImage(image);
 
-                Arrays.stream(selectedFile.getName().split("[\\s\\W]+"))
-                        .forEach(word -> System.out.println("Word: " + word));
-            } catch (Exception e) {
-                e.printStackTrace();
+                    Arrays.stream(selectedFile.getName().split("[\\s\\W]+"))
+                            .forEach(word -> System.out.println("Word: " + word));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } else {
-            System.out.println("File does not exist or is null.");
+            System.out.println("No files selected or the list is empty.");
+        }
+    }
+
+    private void updateImagePreviewList() {
+        // Other code remains the same
+        List<File> selectedFiles = dataModel.getDropFilePaths();
+        // Submit tasks for image processing
+        imageFutures.clear();
+        for (File selectedFile : selectedFiles) {
+            Future<Image> future = executorService.submit(() -> processImage(selectedFile));
+            imageFutures.add(future);
+        }
+    }
+
+    private Image processImage(File selectedFile) {
+        try {
+            // Your image processing logic here, e.g., resizing
+            return editedImage(new Image(selectedFile.toURI().toString()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -179,11 +192,7 @@ public class ImagePageController implements Initializable {
         return resizedImage;
     }
 
-    //TODO: Make the Save Method
-    private void saveEditedImage() {
-        Image editedImage = editedImage(imagePreview.getImage());
-        dataModel.setEditedImage(editedImage);
-    }
+
 
     private void downloadImage() { // Download the image.
         FileChooser fileChooser = new FileChooser();

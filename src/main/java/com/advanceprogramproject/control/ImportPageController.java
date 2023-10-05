@@ -43,11 +43,11 @@ public class ImportPageController implements Initializable {
                 closePreviousScene();
 
                 //Loading new fxml file
-                FXMLLoader loader = new FXMLLoader(ImportPageController.class.getResource("/com/advanceprogramproject/views/image-list.fxml"));
+                FXMLLoader loader = new FXMLLoader(ImportPageController.class.getResource("/com/advanceprogramproject/views/image-page.fxml"));
                 Parent root = loader.load();
 
                 // Pass the current stage reference to the new controller
-                imageListController controller = loader.getController();
+                ImagePageController controller = loader.getController();
                 controller.setStage(stage);
 
 
