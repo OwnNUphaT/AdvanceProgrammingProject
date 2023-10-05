@@ -42,13 +42,13 @@
             </children></AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
             <children>
-                <Slider fx:id="VisibilitySlider" layoutX="76.0" layoutY="304.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
-                <Label layoutX="80.0" layoutY="276.0" text="Visibility:">
+                <Slider fx:id="TextSizeSlider" layoutX="76.0" layoutY="304.0" max="400.0" min="200.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" value="200.0" />
+                <Label layoutX="80.0" layoutY="276.0" text="Text Size:">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <Label fx:id="VisibilityLabel" layoutX="260.0" layoutY="330.0" text="0%" />
+                <Label fx:id="VisibilityLabel" layoutX="271.0" layoutY="331.0" text="0" />
                 <TextField fx:id="textField" layoutX="76.0" layoutY="71.0" prefHeight="40.0" prefWidth="280.0" promptText="Width:" style="-fx-background-color: D9D9D9;" />
                 <Label layoutX="76.0" layoutY="37.0" text="TEXT:">
                     <font>
@@ -61,8 +61,8 @@
                     </font>
                 </Label>
                 <ChoiceBox fx:id="fontDrop" layoutX="76.0" layoutY="151.0" prefWidth="400.0" />
-                <Slider fx:id="rotationSlider" layoutX="76.0" layoutY="372.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
-                <Label fx:id="SizeLabel" layoutX="260.0" layoutY="397.0" text="0%" />
+                <Slider fx:id="rotationSlider" layoutX="76.0" layoutY="372.0" max="360.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
+                <Label fx:id="SizeLabel" layoutX="271.0" layoutY="396.0" text="0" />
                 <Label layoutX="80.0" layoutY="348.0" text="Rotation">
                     <font>
                         <Font size="14.0" />
@@ -79,7 +79,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Button fx:id="applyWatermarkButton" cache="true" layoutX="386.0" layoutY="74.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Apply" textFill="WHITE">
+                <Button fx:id="applyWatermarkButton" cache="true" layoutX="369.0" layoutY="74.0" mnemonicParsing="false" onAction="#applyWatermark" prefHeight="35.0" prefWidth="59.0" style="-fx-background-color: E51B23;" text="Apply" textFill="WHITE">
                     <font>
                         <Font size="14.0" />
                     </font>
@@ -92,6 +92,17 @@
                 </Button>
             <ChoiceBox fx:id="alignmentDrop" layoutX="76.0" layoutY="213.0" prefWidth="150.0" />
             <Label layoutX="75.0" layoutY="189.0" text="Alignment:" />
+            <Button fx:id="resetWatermarkButton" cache="true" layoutX="447.0" layoutY="74.0" mnemonicParsing="false" onAction="#resetWatermark" prefHeight="35.0" prefWidth="59.0" style="-fx-background-color: E51B23;" text="Reset" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
             </children></AnchorPane>
     </items>
 </SplitPane>

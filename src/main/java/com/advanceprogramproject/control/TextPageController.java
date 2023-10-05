@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -31,8 +32,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class TextPageController implements Initializable {
@@ -42,7 +41,7 @@ public class TextPageController implements Initializable {
     @FXML
     private Label SizeLabel;
     @FXML
-    private Slider VisibilitySlider;
+    private Slider TextSizeSlider;
     @FXML
     private Slider rotationSlider;
     @FXML
@@ -89,46 +88,19 @@ public class TextPageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Get a list of all available font families
-        List<String> fontFamilies = Font.getFamilies();
-        fontDrop.getItems().addAll(fontFamilies);
 
-        // Textfield for watermark text
-        textField.textProperty().addListener((observable, oldValue, newValue) -> updateWatermark());
-
-        // Font choice box
-        fontDrop.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> updateWatermark());
-
-        // Adding the alignment Choice Box
-        String[] alignmentList = {"Top Left", "Center", "Top Right", "Bottom Left", "Bottom Right"};
-        alignmentDrop.getItems().addAll(alignmentList);
-
-        // Rotation Slider
-        rotationSlider.setShowTickLabels(true);
-        rotationSlider.setShowTickMarks(true);
-
-        // Set the major tick unit (step)
-        rotationSlider.setMajorTickUnit(10);
-        rotationSlider.setMinorTickCount(0);
-
-        // Display the value in SizeLabel
         rotationSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-                SizeLabel.setText("Size: " + newValue.intValue());
-                updateWatermark();
+                SizeLabel.setText(newValue.intValue() + "");
             }
         });
 
-
-
-
-        //Visibility slider percentage.
-        VisibilitySlider.valueProperty().addListener(new ChangeListener<Number>() {
+        TextSizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                percent = (int) VisibilitySlider.getValue();
-                VisibilityLabel.setText(Integer.toString(percent) + "%");
+                percent = (int) TextSizeSlider.getValue();
+                VisibilityLabel.setText(Integer.toString(percent) + "");
             }
         });
 
@@ -186,20 +158,14 @@ public class TextPageController implements Initializable {
         }
     }
     // Method to update the watermark based on the current settings
-    private void updateWatermark() {
-        // TODO: Check why the text is overlay
+    @FXML
+    public void applyWatermark() {
         String watermarkText = textField.getText();
         if (watermarkText.isEmpty()) {
             return;
         }
 
-        // Get the selected font from the ChoiceBox
-        String selectedFont = fontDrop.getValue();
-        if (selectedFont == null) {
-            // If no font is selected, use a default font
-            selectedFont = "Arial";
-        }
-
+        double TextSize = TextSizeSlider.getValue();
         Image originalImage = imagePreview.getImage();
         Canvas canvas = new Canvas(originalImage.getWidth(), originalImage.getHeight());
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -208,24 +174,62 @@ public class TextPageController implements Initializable {
         gc.drawImage(originalImage, 0, 0);
 
         // Set up graphics context for watermarking
-        gc.setFont(new Font(selectedFont, 350)); // Use the selected font here
+        gc.setFont(new Font("Arial", TextSize));
         gc.setFill(Color.BLACK);
         gc.setGlobalAlpha(0.5);
 
         Text textNode = new Text(watermarkText);
-        textNode.setFont(new Font(selectedFont, 100)); // Use the selected font here
+        textNode.setFont(gc.getFont());
         double textWidth = textNode.getLayoutBounds().getWidth();
         double textHeight = textNode.getLayoutBounds().getHeight();
 
-        //TODO: Get rotation value from the slider
-        double rotationValue = rotationSlider.getValue();
+        double rotationAngle = rotationSlider.getValue(); // get the rotation value
 
-        // Set rotation - Translate to center, rotate, then translate back
-        gc.translate(originalImage.getWidth() / 2, originalImage.getHeight() / 2);
-        gc.fillText(watermarkText, -textWidth, textHeight);
+        // Calculate position to center the text
+        double centerX = (originalImage.getWidth() - textWidth) / 2;
+        double centerY = (originalImage.getHeight() - textHeight) / 2;
 
+        // Set translation for rotation and centering
+        gc.translate(centerX + textWidth / 2, centerY + textHeight / 2);
+        gc.rotate(rotationAngle);
+        gc.translate(-centerX - textWidth / 2, -centerY - textHeight / 2);
+
+        // Draw the text at the center
+        gc.fillText(watermarkText, centerX, centerY + textHeight); // Adjust y position to take into account the baseline of the text
 
         WritableImage watermarkedImage = canvas.snapshot(null, null);
         imagePreview.setImage(watermarkedImage);
     }
+
+
+    @FXML
+    public void resetWatermark() {
+        DataModel dataModel = DataModel.getInstance();
+        if (dataModel.getDropFilePaths() != null) {
+            String fileImage = dataModel.getDropFilePaths().get(0).toString();
+            if (fileImage != null) {
+                File file = new File(fileImage);
+                if (file.exists()) {
+                    try {
+                        // Reload the original image
+                        Image image = new Image(new File(fileImage).toURI().toURL().toString());
+
+                        // Set the loaded image to the ImageView
+                        imagePreview.setImage(image);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (RuntimeException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    System.out.println("File does not exist: " + fileImage);
+                }
+            } else {
+                System.out.println("File path is null or not set.");
+            }
+
+
+        }
+    }
+
 }
