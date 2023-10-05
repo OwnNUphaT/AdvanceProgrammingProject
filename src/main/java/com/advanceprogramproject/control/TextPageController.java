@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TextPageController implements Initializable {
@@ -112,30 +114,22 @@ public class TextPageController implements Initializable {
 
         // Check if the file path is not null before using it
         if (dataModel.getDropFilePaths() != null) {
-            // Use dataModel.getDropFilePath() to access the file path
-            // Load the original image
-            String fileImage = dataModel.getDropFilePaths().get(0).toString();
-            if (fileImage != null) {
-                File file = new File(fileImage);
-                if (file.exists()) {
+            List<File> selectedFiles = dataModel.getDropFilePaths();
+
+            if (selectedFiles != null && !selectedFiles.isEmpty()) {
+                for (File selectedFile : selectedFiles) {
                     try {
-
-                        // Assuming there's only one image
-                        Image image = new Image(new File(fileImage).toURI().toURL().toString());
-
-                        // Set the loaded image to the ImageView
+                        Image image = new Image(selectedFile.toURI().toString());
                         imagePreview.setImage(image);
-                    } catch (MalformedURLException e) {
+
+                        Arrays.stream(selectedFile.getName().split("[\\s\\W]+"))
+                                .forEach(word -> System.out.println("Word: " + word));
+                    } catch (Exception e) {
                         e.printStackTrace();
-                    } catch (RuntimeException e) {
-                        throw new RuntimeException(e);
                     }
-                } else {
-                    System.out.println("File does not exist: " + fileImage);
                 }
-                // Load the image or perform other operations with the file path
             } else {
-                System.out.println("File path is null or not set.");
+                System.out.println("No files selected or the list is empty.");
             }
 
             //Back to main-view page.
@@ -211,28 +205,23 @@ public class TextPageController implements Initializable {
     public void resetWatermark() {
         DataModel dataModel = DataModel.getInstance();
         if (dataModel.getDropFilePaths() != null) {
-            String fileImage = dataModel.getDropFilePaths().get(0).toString();
-            if (fileImage != null) {
-                File file = new File(fileImage);
-                if (file.exists()) {
-                    try {
-                        // Reload the original image
-                        Image image = new Image(new File(fileImage).toURI().toURL().toString());
+            List<File> selectedFiles = dataModel.getDropFilePaths();
 
-                        // Set the loaded image to the ImageView
+            if (selectedFiles != null && !selectedFiles.isEmpty()) {
+                for (File selectedFile : selectedFiles) {
+                    try {
+                        Image image = new Image(selectedFile.toURI().toString());
                         imagePreview.setImage(image);
-                    } catch (MalformedURLException e) {
+
+                        Arrays.stream(selectedFile.getName().split("[\\s\\W]+"))
+                                .forEach(word -> System.out.println("Word: " + word));
+                    } catch (Exception e) {
                         e.printStackTrace();
-                    } catch (RuntimeException e) {
-                        throw new RuntimeException(e);
                     }
-                } else {
-                    System.out.println("File does not exist: " + fileImage);
                 }
             } else {
-                System.out.println("File path is null or not set.");
+                System.out.println("No files selected or the list is empty.");
             }
-
         }
     }
     private void alignWatermark(double textWidth, double textHeight, Image originalImage) {
