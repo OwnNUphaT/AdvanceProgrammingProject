@@ -158,44 +158,49 @@ public class TextPageController implements Initializable {
         }
     }
     // Method to update the watermark based on the current settings
-        @FXML
-        public void applyWatermark() {
-            String watermarkText = textField.getText();
-            if (watermarkText.isEmpty()) {
-                return;
-            }
-
-            double TextSize = TextSizeSlider.getValue();
-            Image originalImage = imagePreview.getImage();
-            Canvas canvas = new Canvas(originalImage.getWidth(), originalImage.getHeight());
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-
-            // Draw the original image
-            gc.drawImage(originalImage, 0, 0);
-
-            // Set up graphics context for watermarking
-            gc.setFont(new Font("Arial", TextSize));
-            gc.setFill(Color.BLACK);
-            gc.setGlobalAlpha(0.5);
-
-
-            Text textNode = new Text(watermarkText);
-            textNode.setFont(new Font("Arial", 100));
-            double textWidth = textNode.getLayoutBounds().getWidth();
-            double textHeight = textNode.getLayoutBounds().getHeight();
-
-            double rotationAngle = rotationSlider.getValue(); // get the rotation value
-            gc.rotate(rotationAngle); // apply the rotation value
-
-
-
-            // Set rotation - Translate to center, rotate, then translate back
-            gc.translate(originalImage.getWidth() / 2, originalImage.getHeight() / 2);
-            gc.fillText(watermarkText, -textWidth, textHeight); // Adjust to center the text after rotation
-
-            WritableImage watermarkedImage = canvas.snapshot(null, null);
-            imagePreview.setImage(watermarkedImage);
+    @FXML
+    public void applyWatermark() {
+        String watermarkText = textField.getText();
+        if (watermarkText.isEmpty()) {
+            return;
         }
+
+        double TextSize = TextSizeSlider.getValue();
+        Image originalImage = imagePreview.getImage();
+        Canvas canvas = new Canvas(originalImage.getWidth(), originalImage.getHeight());
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        // Draw the original image
+        gc.drawImage(originalImage, 0, 0);
+
+        // Set up graphics context for watermarking
+        gc.setFont(new Font("Arial", TextSize));
+        gc.setFill(Color.BLACK);
+        gc.setGlobalAlpha(0.5);
+
+        Text textNode = new Text(watermarkText);
+        textNode.setFont(gc.getFont());
+        double textWidth = textNode.getLayoutBounds().getWidth();
+        double textHeight = textNode.getLayoutBounds().getHeight();
+
+        double rotationAngle = rotationSlider.getValue(); // get the rotation value
+
+        // Calculate position to center the text
+        double centerX = (originalImage.getWidth() - textWidth) / 2;
+        double centerY = (originalImage.getHeight() - textHeight) / 2;
+
+        // Set translation for rotation and centering
+        gc.translate(centerX + textWidth / 2, centerY + textHeight / 2);
+        gc.rotate(rotationAngle);
+        gc.translate(-centerX - textWidth / 2, -centerY - textHeight / 2);
+
+        // Draw the text at the center
+        gc.fillText(watermarkText, centerX, centerY + textHeight); // Adjust y position to take into account the baseline of the text
+
+        WritableImage watermarkedImage = canvas.snapshot(null, null);
+        imagePreview.setImage(watermarkedImage);
+    }
+
 
     @FXML
     public void resetWatermark() {

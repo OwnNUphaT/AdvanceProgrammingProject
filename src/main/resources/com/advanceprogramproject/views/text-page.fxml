@@ -48,7 +48,7 @@
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <Label fx:id="VisibilityLabel" layoutX="260.0" layoutY="330.0" text="0%" />
+                <Label fx:id="VisibilityLabel" layoutX="271.0" layoutY="331.0" text="0" />
                 <TextField fx:id="textField" layoutX="76.0" layoutY="71.0" prefHeight="40.0" prefWidth="280.0" promptText="Width:" style="-fx-background-color: D9D9D9;" />
                 <Label layoutX="76.0" layoutY="37.0" text="TEXT:">
                     <font>
@@ -61,8 +61,8 @@
                     </font>
                 </Label>
                 <ChoiceBox fx:id="fontDrop" layoutX="76.0" layoutY="151.0" prefWidth="400.0" />
-                <Slider fx:id="rotationSlider" layoutX="76.0" layoutY="372.0" max="30.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
-                <Label fx:id="SizeLabel" layoutX="260.0" layoutY="397.0" text="0%" />
+                <Slider fx:id="rotationSlider" layoutX="76.0" layoutY="372.0" max="360.0" prefWidth="400.0" stylesheets="@../sliderStyle.css" />
+                <Label fx:id="SizeLabel" layoutX="271.0" layoutY="396.0" text="0" />
                 <Label layoutX="80.0" layoutY="348.0" text="Rotation">
                     <font>
                         <Font size="14.0" />
