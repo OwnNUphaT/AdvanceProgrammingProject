@@ -56,6 +56,8 @@ public class TextPageController implements Initializable {
     private ChoiceBox<String> fontDrop;
     @FXML
     private ChoiceBox alignmentDrop;
+    double x = 0, y = 0;
+
 
 
     private Scene scene;
@@ -104,6 +106,7 @@ public class TextPageController implements Initializable {
             }
         });
 
+        fontDrop.getItems().addAll(Font.getFamilies());
 
         DataModel dataModel = DataModel.getInstance();
 
@@ -155,11 +158,14 @@ public class TextPageController implements Initializable {
 
             });
 
+            alignmentDrop.getItems().addAll("Top Left", "Top Right", "Bottom Left", "Bottom Right", "Center");
+
         }
     }
     // Method to update the watermark based on the current settings
     @FXML
     public void applyWatermark() {
+
         String watermarkText = textField.getText();
         if (watermarkText.isEmpty()) {
             return;
@@ -174,7 +180,9 @@ public class TextPageController implements Initializable {
         gc.drawImage(originalImage, 0, 0);
 
         // Set up graphics context for watermarking
-        gc.setFont(new Font("Arial", TextSize));
+        String selectedFont = fontDrop.getSelectionModel().getSelectedItem();
+        gc.setFont(new Font(selectedFont, TextSize));
+
         gc.setFill(Color.BLACK);
         gc.setGlobalAlpha(0.5);
 
@@ -183,19 +191,16 @@ public class TextPageController implements Initializable {
         double textWidth = textNode.getLayoutBounds().getWidth();
         double textHeight = textNode.getLayoutBounds().getHeight();
 
-        double rotationAngle = rotationSlider.getValue(); // get the rotation value
+        // Call the alignment method
+        alignWatermark(textWidth, textHeight, originalImage);
 
-        // Calculate position to center the text
-        double centerX = (originalImage.getWidth() - textWidth) / 2;
-        double centerY = (originalImage.getHeight() - textHeight) / 2;
+        gc.translate(x + textWidth / 2, y - textHeight / 2); // Adjusted for text baseline
+        gc.rotate(rotationSlider.getValue());
+        gc.translate(-x - textWidth / 2, -y + textHeight / 2); // Adjusted for text baseline
 
-        // Set translation for rotation and centering
-        gc.translate(centerX + textWidth / 2, centerY + textHeight / 2);
-        gc.rotate(rotationAngle);
-        gc.translate(-centerX - textWidth / 2, -centerY - textHeight / 2);
+        // Draw the rotated text
+        gc.fillText(watermarkText, x, y);
 
-        // Draw the text at the center
-        gc.fillText(watermarkText, centerX, centerY + textHeight); // Adjust y position to take into account the baseline of the text
 
         WritableImage watermarkedImage = canvas.snapshot(null, null);
         imagePreview.setImage(watermarkedImage);
@@ -228,8 +233,36 @@ public class TextPageController implements Initializable {
                 System.out.println("File path is null or not set.");
             }
 
-
         }
     }
+    private void alignWatermark(double textWidth, double textHeight, Image originalImage) {
+
+        String alignment = (String) alignmentDrop.getSelectionModel().getSelectedItem();
+
+        switch (alignment) {
+            case "Top Left":
+                x = 10; // Small margin from top-left
+                y = textHeight + 10; // Y position is adjusted for text baseline
+                break;
+            case "Top Right":
+                x = originalImage.getWidth() - textWidth - 10;
+                y = textHeight + 10;
+                break;
+            case "Bottom Left":
+                x = 10;
+                y = originalImage.getHeight() - 10;
+                break;
+            case "Bottom Right":
+                x = originalImage.getWidth() - textWidth - 10;
+                y = originalImage.getHeight() - 10;
+                break;
+            case "Center":
+                x = (originalImage.getWidth() - textWidth) / 2;
+                y = (originalImage.getHeight() - textHeight) / 2 + textHeight; // Adjust y position for text baseline
+                break;
+        }
+
+    }
+
 
 }
