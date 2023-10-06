@@ -1,6 +1,7 @@
 package com.advanceprogramproject.control;
 
 import com.advanceprogramproject.model.DataModel;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -110,7 +111,6 @@ public class ImagePageController implements Initializable {
         }
     }
 
-    @FXML
     public void downloadAll() {
         // Use DirectoryChooser instead of FileChooser to select the directory to save images
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -125,38 +125,57 @@ public class ImagePageController implements Initializable {
                 return;
             }
 
-            int counter = 0; // For naming the saved images
+            int numProcessors = Runtime.getRuntime().availableProcessors();
+            ExecutorService executorService = Executors.newFixedThreadPool(numProcessors);
 
-            for (Image editedImage : editedImages) {
+            List<Future<Void>> futures = new ArrayList<>();
+
+            for (int i = 0; i < editedImages.size(); i++) {
+                final int index = i;
+                Future<Void> future = executorService.submit(() -> {
+                    try {
+                        BufferedImage originalImage = SwingFXUtils.fromFXImage(editedImages.get(index), null);
+
+                        // Create a new BufferedImage with the correct color model for JPEG
+                        BufferedImage convertedImage = new BufferedImage(
+                                originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB
+                        );
+                        convertedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
+
+                        // Determine file extension
+                        String ext = imageFormat.getValue().toLowerCase();
+
+                        // Construct the filename for the watermarked image
+                        File outputFile = new File(selectedDirectory, "resizedImage_" + index + "." + ext);
+
+                        // Save the image in the selected format
+                        ImageIO.write(convertedImage, ext, outputFile);
+
+                        showAlert("Success", "Image is Saved!");
+                    } catch (IOException ex) {
+                        System.out.println(ex.getMessage());
+                    }
+
+                    return null;
+                });
+
+                futures.add(future);
+            }
+
+            // Wait for all tasks to complete
+            for (Future<Void> future : futures) {
                 try {
-                    BufferedImage originalImage = SwingFXUtils.fromFXImage(editedImages.get(counter), null);
-
-                    // Create a new BufferedImage with the correct color model for JPEG
-                    BufferedImage convertedImage = new BufferedImage(
-                            originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB
-                    );
-                    convertedImage.createGraphics().drawImage(originalImage, 0, 0, Color.WHITE, null);
-
-                    // Determine file extension
-                    String ext = imageFormat.getValue().toLowerCase();
-
-                    // Construct the filename for the watermarked image
-                    File outputFile = new File(selectedDirectory, "resizedImage_" + counter + "." + ext);
-
-                    // Save the image in the selected format
-                    ImageIO.write(convertedImage, ext, outputFile);
-
-                    showAlert("Success", "Image is Saved!");
-
-                    counter++;
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                } catch (IndexOutOfBoundsException e) {
+                    future.get();
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
+
+            // Shutdown the executor service
+            executorService.shutdown();
         }
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -320,14 +339,16 @@ public class ImagePageController implements Initializable {
 
 
 
-    // Method to show a simple alert dialog
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+        // Method to show a simple alert dialog
+        public void showAlert(String title, String content) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(title);
+                alert.setContentText(content);
+                alert.showAndWait();
+            });
+        }
+
 
     public void setStage(Stage stage) {
         this.stage = stage;
