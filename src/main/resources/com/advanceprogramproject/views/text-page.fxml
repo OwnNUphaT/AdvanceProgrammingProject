@@ -22,7 +22,7 @@
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <Button fx:id="downloadBtn" cache="true" layoutX="123.0" layoutY="319.0" mnemonicParsing="false" onAction="#handleDownloadAction" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: E51B23;" text="Download" textFill="WHITE" AnchorPane.bottomAnchor="129.0" AnchorPane.leftAnchor="123.0" AnchorPane.rightAnchor="123.0" AnchorPane.topAnchor="319.0">
+                <Button fx:id="downloadBtn" cache="true" layoutX="133.0" layoutY="356.0" mnemonicParsing="false" onAction="#handleDownloadAction" prefHeight="26.0" prefWidth="105.0" style="-fx-background-color: E51B23;" text="DownloadAll" textFill="WHITE" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="133.0" AnchorPane.rightAnchor="133.0" AnchorPane.topAnchor="356.0">
                     <font>
                         <Font size="14.0" />
                     </font>
@@ -33,12 +33,45 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <ChoiceBox fx:id="formatDrop" layoutX="86.0" layoutY="386.0" prefWidth="200.0" />
-                <Label layoutX="86.0" layoutY="363.0" text="Image Format:">
+                <ChoiceBox fx:id="formatDrop" layoutX="86.0" layoutY="421.0" prefWidth="200.0" />
+                <Label layoutX="86.0" layoutY="396.0" text="Image Format:">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Label>
+                <Button fx:id="nextButton" cache="true" layoutX="272.0" layoutY="288.0" mnemonicParsing="false" onAction="#handleNextImage" prefHeight="17.0" prefWidth="14.0" style="-fx-background-color: E51B23;" text="&gt;" textFill="WHITE">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
+                <Button fx:id="prevButton" cache="true" layoutX="72.0" layoutY="288.0" mnemonicParsing="false" onAction="#handleDownloadAction" prefHeight="17.0" prefWidth="14.0" style="-fx-background-color: E51B23;" text="&lt;" textFill="WHITE">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
+                <Button fx:id="downloadCurrentButton" cache="true" layoutX="141.0" layoutY="318.0" mnemonicParsing="false" onAction="#handleDownloadCurrentImage" prefHeight="30.0" prefWidth="90.0" style="-fx-background-color: E51B23;" text="Dowload" textFill="WHITE">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
             </children></AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
             <children>
@@ -90,19 +123,19 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-            <ChoiceBox fx:id="alignmentDrop" layoutX="76.0" layoutY="213.0" prefWidth="150.0" />
-            <Label layoutX="75.0" layoutY="189.0" text="Alignment:" />
-            <Button fx:id="resetWatermarkButton" cache="true" layoutX="447.0" layoutY="74.0" mnemonicParsing="false" onAction="#resetWatermark" prefHeight="35.0" prefWidth="59.0" style="-fx-background-color: E51B23;" text="Reset" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
+                <ChoiceBox fx:id="alignmentDrop" layoutX="76.0" layoutY="213.0" prefWidth="150.0" />
+                <Label layoutX="75.0" layoutY="189.0" text="Alignment:" />
+                <Button fx:id="resetWatermarkButton" cache="true" layoutX="447.0" layoutY="74.0" mnemonicParsing="false" onAction="#resetWatermark" prefHeight="35.0" prefWidth="59.0" style="-fx-background-color: E51B23;" text="Reset" textFill="WHITE">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
             </children></AnchorPane>
     </items>
 </SplitPane>

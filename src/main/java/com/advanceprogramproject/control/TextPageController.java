@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.FontWeight;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -29,9 +31,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class TextPageController implements Initializable {
@@ -51,84 +52,142 @@ public class TextPageController implements Initializable {
     @FXML
     private TextField textField;
     @FXML
-    private Button clear;
-    @FXML
     private ChoiceBox<String> fontDrop;
+    @FXML
+    private ChoiceBox alignmentDrop;
     @FXML
     private ChoiceBox<String> formatDrop;
     @FXML
-    private ChoiceBox alignmentDrop;
-    DataModel dataModel = DataModel.getInstance();
+    private Button nextButton;
+    @FXML
+    private Button prevButton;
+    @FXML
+    private Button downloadCurrentButton;
+
     double x = 0, y = 0;
-
-
-
     private Scene scene;
     int percent;
+    private int currentImageIndex = 0;
+
+    @FXML
+    public void handleDownloadCurrentImage() {
+        Image currentImage = imagePreview.getImage();
+
+        // Check if there is a current image to download
+        if (currentImage != null) {
+            // Use FileChooser to select the directory to save the image
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Image");
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.bmp");
+            fileChooser.getExtensionFilters().add(extFilter);
+
+            File selectedFile = fileChooser.showSaveDialog(stage);
+
+            if (selectedFile != null) {
+                try {
+                    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(currentImage, null);
+
+                    // Determine file extension based on the selected format
+                    String ext = formatDrop.getSelectionModel().getSelectedItem().toLowerCase();
+
+                    if ("jpg".equals(ext)) {
+                        // For JPEG, remove alpha channel (transparency)
+                        BufferedImage convertedImg = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+                        convertedImg.createGraphics().drawImage(bufferedImage, 0, 0, java.awt.Color.WHITE, null);
+                        bufferedImage = convertedImg;
+                    }
+
+                    // Save the image with the selected extension
+                    ImageIO.write(bufferedImage, ext, selectedFile);
+
+                    // You can add a success message or alert here
+                    System.out.println("Image saved successfully.");
+                } catch (IOException e) {
+                    // Handle any potential exceptions
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            // Handle the case where there is no current image to download
+            System.out.println("No image to download.");
+        }
+    }
 
     @FXML
     public void handleDownloadAction() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Image");
+        // Use DirectoryChooser instead of FileChooser to select the directory to save images
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select Directory to Save Images");
+        File selectedDirectory = directoryChooser.showDialog(stage);
 
-        // Selected format
-        String selectedFormat = formatDrop.getValue();
+        if (selectedDirectory != null) {
+            DataModel dataModel = DataModel.getInstance();
 
+            if (dataModel.getDropFilePaths() == null || dataModel.getDropFilePaths().isEmpty()) {
+                System.out.println("No images to save.");
+                return;
+            }
 
-        FileChooser.ExtensionFilter extensionFilter = null;
+            int counter = 1; // For naming the saved images
 
-        if ("JPG".equals(selectedFormat)) {
-            extensionFilter = new FileChooser.ExtensionFilter("JPG", "*.jpg");
-        } else if ("PNG".equals(selectedFormat)) {
-            extensionFilter = new FileChooser.ExtensionFilter("PNG", "*.png");
-        }
+            for (File fileImage : dataModel.getDropFilePaths()) {
+                try {
+                    // Load the original image
+                    Image originalImage = new Image(fileImage.toURI().toURL().toString());
 
-        if (extensionFilter != null) {
-            fileChooser.getExtensionFilters().setAll(extensionFilter);
-        }
+                    // Apply the watermark on the image
+                    imagePreview.setImage(originalImage);
+                    applyWatermark();
 
+                    // Get the watermarked image
+                    Image watermarkedImage = imagePreview.getImage();
 
-        // Choose the directory for the file
-        File file = fileChooser.showSaveDialog(stage);
+                    // Convert to BufferedImage
+                    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(watermarkedImage, null);
 
-        if (file != null) {
-            try {
-                Image resizedImage = editedImage(imagePreview.getImage());
+                    // Determine file extension
+                    String ext = formatDrop.getSelectionModel().getSelectedItem().toLowerCase();
 
-                if (resizedImage != null) {
-                    BufferedImage originalImage = SwingFXUtils.fromFXImage(resizedImage, null);
-
-                    // Create a new BufferedImage with the correct color model for JPEG
-                    BufferedImage convertedImage = new BufferedImage(
-                            originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB
-                    );
-                    convertedImage.createGraphics().drawImage(originalImage, 0, 0, java.awt.Color.WHITE, null);
-                    // Save the image in the selected format
-                    if (!selectedFormat.equals("JPG")) {
-                        ImageIO.write(convertedImage, "png", file);
-                        showAlert("Success", "Image is Saved!");
+                    if ("jpg".equals(ext)) {
+                        // For JPEG, remove alpha channel (transparency)
+                        bufferedImage = SwingFXUtils.fromFXImage(watermarkedImage, null);
+                        BufferedImage convertedImg = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+                        convertedImg.createGraphics().drawImage(bufferedImage, 0, 0, java.awt.Color.WHITE, null);
+                        bufferedImage = convertedImg;
                     } else {
-                        ImageIO.write(convertedImage, "jpg", file);
-                        showAlert("Success", "Image is Saved!");
+                        // For PNG and BMP, the default conversion is sufficient
+                        bufferedImage = SwingFXUtils.fromFXImage(watermarkedImage, null);
                     }
-                } else {
-                    showAlert("Error", "No image selected to save.");
+
+                    // Construct the filename for the watermarked image
+                    File outputFile = new File(selectedDirectory, "watermarked_" + counter + "." + ext);
+
+                    // Save the watermarked image
+                    ImageIO.write(bufferedImage, ext, outputFile);
+
+                    counter++;
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException ex) {
+                    System.out.println(ex.getMessage());
                 }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                showAlert("Error", "An error occurred while saving the image: " + ex.getMessage());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                showAlert("Error", "Unexpected error: " + ex.getMessage());
             }
         }
     }
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
+    /////////////////////////////////   initialize   /////////////////////////////////
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // Inside the initialize() method:
+        formatDrop.getItems().addAll("PNG", "JPG", "BMP");
+        formatDrop.getSelectionModel().selectFirst(); // Default to PNG
+
 
         rotationSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -147,30 +206,35 @@ public class TextPageController implements Initializable {
 
         fontDrop.getItems().addAll(Font.getFamilies());
 
-
+        DataModel dataModel = DataModel.getInstance();
 
         // Check if the file path is not null before using it
         if (dataModel.getDropFilePaths() != null) {
-            List<File> selectedFiles = dataModel.getDropFilePaths();
-
-            if (selectedFiles != null && !selectedFiles.isEmpty()) {
-                for (File selectedFile : selectedFiles) {
+            // Use dataModel.getDropFilePath() to access the file path
+            // Load the original image
+            String fileImage = dataModel.getDropFilePaths().get(0).toString();
+            if (fileImage != null) {
+                File file = new File(fileImage);
+                if (file.exists()) {
                     try {
-                        Image image = new Image(selectedFile.toURI().toString());
+
+                        // Assuming there's only one image
+                        Image image = new Image(new File(fileImage).toURI().toURL().toString());
+
+                        // Set the loaded image to the ImageView
                         imagePreview.setImage(image);
-
-                        Arrays.stream(selectedFile.getName().split("[\\s\\W]+"))
-                                .forEach(word -> System.out.println("Word: " + word));
-                    } catch (Exception e) {
+                    } catch (MalformedURLException e) {
                         e.printStackTrace();
+                    } catch (RuntimeException e) {
+                        throw new RuntimeException(e);
                     }
+                } else {
+                    System.out.println("File does not exist: " + fileImage);
                 }
+                // Load the image or perform other operations with the file path
             } else {
-                System.out.println("No files selected or the list is empty.");
+                System.out.println("File path is null or not set.");
             }
-
-            // Adding Format ChoiceBox
-            formatDrop.getItems().addAll("JPG", "PNG");
 
             //Back to main-view page.
             BackBtnText.setOnAction(event -> {
@@ -192,17 +256,57 @@ public class TextPageController implements Initializable {
 
             });
 
+            downloadCurrentButton.setDisable(true); // Initially disable the button
+            imagePreview.imageProperty().addListener((observable, oldValue, newValue) -> {
+                // Enable the button when a new image is set
+                downloadCurrentButton.setDisable(newValue == null);
+            });
+
             alignmentDrop.getItems().addAll("Top Left", "Top Right", "Bottom Left", "Bottom Right", "Center");
+
+            updateImagePreview();
 
         }
     }
+
+    ////////////////////////// END initialize //////////////////////////////
+
+    @FXML
+    public void handleNextImage() {
+        currentImageIndex++;
+        if (currentImageIndex >= DataModel.getInstance().getDropFilePaths().size()) {
+            currentImageIndex = 0; // loop back to the first image if we're at the end
+        }
+        updateImagePreview();
+    }
+
+    @FXML
+    public void handlePrevImage() {
+        currentImageIndex--;
+        if (currentImageIndex < 0) {
+            currentImageIndex = DataModel.getInstance().getDropFilePaths().size() - 1; // loop back to the last image if we're at the beginning
+        }
+        updateImagePreview();
+    }
+
+    private void updateImagePreview() {
+        File fileImage = DataModel.getInstance().getDropFilePaths().get(currentImageIndex);
+        Image image;
+        try {
+            image = new Image(fileImage.toURI().toURL().toString());
+            imagePreview.setImage(image);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Method to update the watermark based on the current settings
     @FXML
-    public Image applyWatermark() {
+    public void applyWatermark() {
 
         String watermarkText = textField.getText();
         if (watermarkText.isEmpty()) {
-            return null;
+            return;
         }
 
         double TextSize = TextSizeSlider.getValue();
@@ -238,7 +342,6 @@ public class TextPageController implements Initializable {
 
         WritableImage watermarkedImage = canvas.snapshot(null, null);
         imagePreview.setImage(watermarkedImage);
-        return originalImage;
     }
 
 
@@ -246,23 +349,28 @@ public class TextPageController implements Initializable {
     public void resetWatermark() {
         DataModel dataModel = DataModel.getInstance();
         if (dataModel.getDropFilePaths() != null) {
-            List<File> selectedFiles = dataModel.getDropFilePaths();
-
-            if (selectedFiles != null && !selectedFiles.isEmpty()) {
-                for (File selectedFile : selectedFiles) {
+            String fileImage = dataModel.getDropFilePaths().get(0).toString();
+            if (fileImage != null) {
+                File file = new File(fileImage);
+                if (file.exists()) {
                     try {
-                        Image image = new Image(selectedFile.toURI().toString());
-                        imagePreview.setImage(image);
+                        // Reload the original image
+                        Image image = new Image(new File(fileImage).toURI().toURL().toString());
 
-                        Arrays.stream(selectedFile.getName().split("[\\s\\W]+"))
-                                .forEach(word -> System.out.println("Word: " + word));
-                    } catch (Exception e) {
+                        // Set the loaded image to the ImageView
+                        imagePreview.setImage(image);
+                    } catch (MalformedURLException e) {
                         e.printStackTrace();
+                    } catch (RuntimeException e) {
+                        throw new RuntimeException(e);
                     }
+                } else {
+                    System.out.println("File does not exist: " + fileImage);
                 }
             } else {
-                System.out.println("No files selected or the list is empty.");
+                System.out.println("File path is null or not set.");
             }
+
         }
     }
     private void alignWatermark(double textWidth, double textHeight, Image originalImage) {
@@ -292,21 +400,6 @@ public class TextPageController implements Initializable {
                 break;
         }
 
-    }
-
-    private Image editedImage(Image image) {
-        applyWatermark();
-
-        return applyWatermark();
-    }
-
-    // Method to show a simple alert dialog
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
 
