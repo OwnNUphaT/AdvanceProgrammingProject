@@ -49,6 +49,7 @@ public class ImagePageController implements Initializable {
     private Stage stage;
     DataModel dataModel = new DataModel();
     private int currentImageIndex = 0;
+    private List<File> selectedFiles = new ArrayList<>();
 
 
     @FXML
@@ -201,16 +202,18 @@ public class ImagePageController implements Initializable {
     // Set up the image to show up in to the ImagePreview
     private void setupImagePreview() { // Setting up the listView
         DataModel dataModel = DataModel.getInstance();
-        List<File> selectedFiles = dataModel.getDropFilePaths();
+        selectedFiles = dataModel.getDropFilePaths();
 
         if (selectedFiles != null && !selectedFiles.isEmpty()) {
             for (File selectedFile : selectedFiles) {
                 try {
-                    Image image = new Image(selectedFile.toURI().toString());
-                    imagePreview.setImage(image);
+                    if (!selectedFile.getAbsolutePath().endsWith(".zip")){
+                        Image image = new Image(selectedFile.toURI().toString());
+                        imagePreview.setImage(image);
 
-                    Arrays.stream(selectedFile.getName().split("[\\s\\W]+"))
-                            .forEach(word -> System.out.println("Word: " + word));
+                        Arrays.stream(selectedFile.getName().split("[\\s\\W]+"))
+                                .forEach(word -> System.out.println("Word: " + word));
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -264,7 +267,7 @@ public class ImagePageController implements Initializable {
     }
 
     private void updateImagePreview() {
-        File fileImage = DataModel.getInstance().getDropFilePaths().get(currentImageIndex);
+        File fileImage = selectedFiles.get(currentImageIndex);
         Image image;
         try {
             image = new Image(fileImage.toURI().toURL().toString());
