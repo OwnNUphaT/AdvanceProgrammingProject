@@ -1,6 +1,7 @@
 package com.advanceprogramproject.control;
 
 import com.advanceprogramproject.model.DataModel;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
@@ -12,7 +13,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.FontWeight;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TextPageController implements Initializable {
     private Stage stage;
@@ -128,52 +130,62 @@ public class TextPageController implements Initializable {
                 return;
             }
 
-            int counter = 1; // For naming the saved images
+            System.out.println(dataModel.getDropFilePaths().size());
 
-            for (File fileImage : dataModel.getDropFilePaths()) {
-                try {
-                    // Load the original image
-                    Image originalImage = new Image(fileImage.toURI().toURL().toString());
-
-                    // Apply the watermark on the image
-                    imagePreview.setImage(originalImage);
-                    applyWatermark();
-
-                    // Get the watermarked image
-                    Image watermarkedImage = imagePreview.getImage();
-
-                    // Convert to BufferedImage
-                    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(watermarkedImage, null);
-
-                    // Determine file extension
-                    String ext = formatDrop.getSelectionModel().getSelectedItem().toLowerCase();
-
-                    if ("jpg".equals(ext)) {
-                        // For JPEG, remove alpha channel (transparency)
-                        bufferedImage = SwingFXUtils.fromFXImage(watermarkedImage, null);
-                        BufferedImage convertedImg = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-                        convertedImg.createGraphics().drawImage(bufferedImage, 0, 0, java.awt.Color.WHITE, null);
-                        bufferedImage = convertedImg;
-                    } else {
-                        // For PNG and BMP, the default conversion is sufficient
-                        bufferedImage = SwingFXUtils.fromFXImage(watermarkedImage, null);
+            ExecutorService executor = Executors.newFixedThreadPool(6);
+            executor.submit(() -> {
+                Platform.runLater(() -> {
+                    for (int i = 1; i < dataModel.getDropFilePaths().size(); i++) {
+                        try {
+                            File file = dataModel.getDropFilePaths().get(i);
+                            saveMultiImage(file , i, selectedDirectory);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                            System.out.println("MalFormed");
+                        } catch (IOException e) {
+                            System.out.println("IO");
+                            throw new RuntimeException(e);
+                        }
                     }
-
-                    // Construct the filename for the watermarked image
-                    File outputFile = new File(selectedDirectory, "watermarked_" + counter + "." + ext);
-
-                    // Save the watermarked image
-                    ImageIO.write(bufferedImage, ext, outputFile);
-
-                    counter++;
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                }
-            }
+                    System.out.println("The Processing is finished");
+                });
+            });
+            executor.shutdown();
         }
+    }
+
+    public void saveMultiImage(File file, int i, File selectedDirectory) throws IOException, MalformedURLException {
+
+        // Load the original image
+        Image originalImage = new Image(file.toURI().toURL().toString());
+        System.out.println(originalImage);
+
+        // Apply the watermark on the image
+        imagePreview.setImage(originalImage);
+        applyWatermark();
+
+        // Get the watermarked image
+        Image watermarkedImage = imagePreview.getImage();
+
+        // Convert to BufferedImage
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(watermarkedImage, null);
+
+        // Determine file extension
+        String ext = formatDrop.getSelectionModel().getSelectedItem().toLowerCase();
+
+        if ("jpg".equals(ext)) {
+            // For JPEG, remove alpha channel (transparency)
+            BufferedImage convertedImg = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+            convertedImg.createGraphics().drawImage(bufferedImage, 0, 0, java.awt.Color.WHITE, null);
+            bufferedImage = convertedImg;
+        }
+
+        // Construct the filename for the watermarked image
+        File outputFile = new File(selectedDirectory, "watermarked_" + i + "." + ext);
+
+        // Save the watermarked image
+        ImageIO.write(bufferedImage, ext, outputFile);
+        System.out.println("Image Saved");
     }
 
     public void setStage(Stage stage) {
@@ -264,7 +276,11 @@ public class TextPageController implements Initializable {
 
             alignmentDrop.getItems().addAll("Top Left", "Top Right", "Bottom Left", "Bottom Right", "Center");
 
-            updateImagePreview();
+            try {
+                updateImagePreview();
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
 
         }
     }
@@ -277,7 +293,12 @@ public class TextPageController implements Initializable {
         if (currentImageIndex >= DataModel.getInstance().getDropFilePaths().size()) {
             currentImageIndex = 0; // loop back to the first image if we're at the end
         }
-        updateImagePreview();
+        try {
+            updateImagePreview();
+        }catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @FXML
@@ -286,19 +307,23 @@ public class TextPageController implements Initializable {
         if (currentImageIndex < 0) {
             currentImageIndex = DataModel.getInstance().getDropFilePaths().size() - 1; // loop back to the last image if we're at the beginning
         }
-        updateImagePreview();
-    }
-
-    private void updateImagePreview() {
-        File fileImage = DataModel.getInstance().getDropFilePaths().get(currentImageIndex);
-        Image image;
         try {
-            image = new Image(fileImage.toURI().toURL().toString());
-            imagePreview.setImage(image);
-        } catch (MalformedURLException e) {
+            updateImagePreview();
+        }catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
     }
+
+    private void updateImagePreview() throws  MalformedURLException {
+        File fileImage = DataModel.getInstance().getDropFilePaths().get(currentImageIndex);
+        Image image;
+        image = new Image(fileImage.toURI().toURL().toString());
+        imagePreview.setImage(image);
+
+    }
+
+
 
     // Method to update the watermark based on the current settings
     @FXML

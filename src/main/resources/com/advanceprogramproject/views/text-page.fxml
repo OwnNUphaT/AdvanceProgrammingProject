@@ -50,7 +50,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Button fx:id="prevButton" cache="true" layoutX="72.0" layoutY="288.0" mnemonicParsing="false" onAction="#handleDownloadAction" prefHeight="17.0" prefWidth="14.0" style="-fx-background-color: E51B23;" text="&lt;" textFill="WHITE">
+                <Button fx:id="prevButton" cache="true" layoutX="72.0" layoutY="288.0" mnemonicParsing="false" onAction="#handlePrevImage" prefHeight="17.0" prefWidth="14.0" style="-fx-background-color: E51B23;" text="&lt;" textFill="WHITE">
                     <font>
                         <Font size="14.0" />
                     </font>
