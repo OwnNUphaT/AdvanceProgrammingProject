@@ -87,11 +87,10 @@ public class MainViewController implements Initializable {
 
                                 // Set the file path in the dataModel
                                 DataModel dataModel = DataModel.getInstance();
-                                dataModel.addDropFilePath(file);
-                                dataModel.setFileName(fileName);
-
-                                // Add the file name to the inputListView and the absolute path to the list
-                                fileMap.put(fileName, file.getAbsolutePath());
+                                if (!file.getName().endsWith(".zip")) {
+                                    dataModel.addDropFilePath(file);
+                                    dataModel.setFileName(fileName);
+                                }
 
                                 try {
                                     // Unzip the file
@@ -171,7 +170,6 @@ public class MainViewController implements Initializable {
             if (selectedFile != null) {
                 String fileName = selectedFile.getName(); // Extract only the file name
                 importListView.getItems().add(fileName);
-                System.out.println("File path set: " + selectedFile.getAbsolutePath());
 
                 // Hidden the ImageImport
                 importLabel.setVisible(false);
@@ -179,9 +177,10 @@ public class MainViewController implements Initializable {
 
                 // Set the file path in the dataModel
                 DataModel dataModel = DataModel.getInstance();
-                dataModel.addDropFilePath(selectedFile);
-                dataModel.setFileName(fileName);
-
+                if (!selectedFile.getName().endsWith(".zip")) {
+                    dataModel.addDropFilePath(selectedFile);
+                    dataModel.setFileName(fileName);
+                }
                 // Check if there is at least one ZIP file
                 boolean isZipFile = fileName.toLowerCase().endsWith(".zip");
 

@@ -135,7 +135,7 @@ public class TextPageController implements Initializable {
             ExecutorService executor = Executors.newFixedThreadPool(6);
             executor.submit(() -> {
                 Platform.runLater(() -> {
-                    for (int i = 1; i < dataModel.getDropFilePaths().size(); i++) {
+                    for (int i = 0; i < dataModel.getDropFilePaths().size(); i++) {
                         try {
                             File file = dataModel.getDropFilePaths().get(i);
                             saveMultiImage(file , i, selectedDirectory);
